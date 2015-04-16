@@ -1,27 +1,32 @@
 package com.biit.liferay.model;
 
-import java.security.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class KbArticle {
 
 	private Long companyId;
 	private String content;
-	private Timestamp createDate;
+	private Calendar createDate;
 	private String description;
 	private Long groupId;
 	private long kbArticleId;
 	private boolean latest;
 	private boolean main;
-	private Timestamp modifiedDate;
+	private Calendar modifiedDate;
 	private Long parentResourcePrimKey;
 	private int priority;
 	private Long resourcePrimKey;
 	private Long rootResourcePrimKey;
-	private String sections;
+	// Sections are not used and causes problem with serialization.
+	@JsonIgnore
+	private List<String> sections;
 	private int status;
 	private Long statusByUserId;
 	private String statusByUserName;
-	private Timestamp statusDate;
+	private Calendar statusDate;
 	private String title;
 	private Long userId;
 	private String userName;
@@ -45,11 +50,11 @@ public class KbArticle {
 		this.content = content;
 	}
 
-	public Timestamp getCreateDate() {
+	public Calendar getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(Timestamp createDate) {
+	public void setCreateDate(Calendar createDate) {
 		this.createDate = createDate;
 	}
 
@@ -85,11 +90,11 @@ public class KbArticle {
 		this.main = main;
 	}
 
-	public Timestamp getModifiedDate() {
+	public Calendar getModifiedDate() {
 		return modifiedDate;
 	}
 
-	public void setModifiedDate(Timestamp modifiedDate) {
+	public void setModifiedDate(Calendar modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 
@@ -125,14 +130,6 @@ public class KbArticle {
 		this.rootResourcePrimKey = rootResourcePrimKey;
 	}
 
-	public String getSections() {
-		return sections;
-	}
-
-	public void setSections(String sections) {
-		this.sections = sections;
-	}
-
 	public int getStatus() {
 		return status;
 	}
@@ -157,11 +154,11 @@ public class KbArticle {
 		this.statusByUserName = statusByUserName;
 	}
 
-	public Timestamp getStatusDate() {
+	public Calendar getStatusDate() {
 		return statusDate;
 	}
 
-	public void setStatusDate(Timestamp statusDate) {
+	public void setStatusDate(Calendar statusDate) {
 		this.statusDate = statusDate;
 	}
 
@@ -241,6 +238,14 @@ public class KbArticle {
 		if (kbArticleId != other.kbArticleId)
 			return false;
 		return true;
+	}
+
+	public List<String> getSections() {
+		return sections;
+	}
+
+	public void setSections(List<String> sections) {
+		this.sections = sections;
 	}
 
 }

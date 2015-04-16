@@ -34,7 +34,7 @@ public class ArticlePool {
 		}
 	}
 
-	private void removeArticle(long kbArticleId) {
+	public void removeArticle(long kbArticleId) {
 		insertionTime.remove(kbArticleId);
 		articles.remove(kbArticleId);
 	}
