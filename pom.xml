@@ -36,7 +36,7 @@
 		<maven-release-plugin.version>2.5.1</maven-release-plugin.version>
 		<maven-scm-provider-gitexe.version>1.9.2</maven-scm-provider-gitexe.version>
 		<org.testng.version>6.8</org.testng.version>
-		<biit-liferay-common-utils.version>[0.4,0.5)</biit-liferay-common-utils.version>
+		<biit-liferay-common-utils.version>[0.6,0.7)</biit-liferay-common-utils.version>
 		<surefire.version>2.16</surefire.version>
 		<project.scm.id>git</project.scm.id>
 	</properties>
