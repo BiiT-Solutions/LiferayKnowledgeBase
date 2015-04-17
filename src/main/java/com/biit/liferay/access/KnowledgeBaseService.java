@@ -27,6 +27,7 @@ public class KnowledgeBaseService extends ServiceAccess<KbArticle> {
 	private CompanyService companyService;
 
 	public KnowledgeBaseService() {
+		serverConnection();
 	}
 
 	public void reset() {
@@ -49,6 +50,7 @@ public class KnowledgeBaseService extends ServiceAccess<KbArticle> {
 		// Disconnect previous connections.
 		try {
 			siteService.disconnect();
+			companyService.disconnect();
 		} catch (Exception e) {
 
 		}
