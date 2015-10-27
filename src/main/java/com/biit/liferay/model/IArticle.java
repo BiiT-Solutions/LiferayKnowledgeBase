@@ -8,4 +8,6 @@ public interface IArticle<ArticleId> extends IElement<ArticleId> {
 	Long getResourcePrimKey();
 
 	String getTitle();
+
+	String getContent();
 }

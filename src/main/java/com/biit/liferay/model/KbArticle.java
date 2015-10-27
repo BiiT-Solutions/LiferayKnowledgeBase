@@ -42,6 +42,7 @@ public class KbArticle implements IArticle<Long> {
 		this.companyId = companyId;
 	}
 
+	@Override
 	public String getContent() {
 		return content;
 	}
