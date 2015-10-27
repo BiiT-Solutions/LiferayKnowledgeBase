@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class KbArticle {
+public class KbArticle implements IArticle<Long> {
 
 	private Long companyId;
 	private String content;
@@ -114,6 +114,7 @@ public class KbArticle {
 		this.priority = priority;
 	}
 
+	@Override
 	public Long getResourcePrimKey() {
 		return resourcePrimKey;
 	}
@@ -162,6 +163,7 @@ public class KbArticle {
 		this.statusDate = statusDate;
 	}
 
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -246,6 +248,16 @@ public class KbArticle {
 
 	public void setSections(List<String> sections) {
 		this.sections = sections;
+	}
+
+	@Override
+	public Long getId() {
+		return getKbArticleId();
+	}
+
+	@Override
+	public String getUniqueName() {
+		return getKbArticleId() + "";
 	}
 
 }

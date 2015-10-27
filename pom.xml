@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.biit.liferay</groupId>
@@ -7,7 +8,7 @@
 	<version>0.0.6-SNAPSHOT</version>
 	<name>Access to Liferay Knowledge Base</name>
 	<description>Services to retrieve articles from Liferay knowledge base.</description>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>central</id>
@@ -20,7 +21,7 @@
 			<url>https://dev.biit-solutions.com:8443/mavenartifactory/libs-snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<scm>
 		<connection>scm:git:dev.biit-solutions.com:LiferayKnowledgeBase.git</connection>
 		<developerConnection>scm:git:dev.biit-solutions.com:LiferayKnowledgeBase.git</developerConnection>
@@ -36,7 +37,7 @@
 		<maven-release-plugin.version>2.5.1</maven-release-plugin.version>
 		<maven-scm-provider-gitexe.version>1.9.2</maven-scm-provider-gitexe.version>
 		<org.testng.version>6.8</org.testng.version>
-		<biit-liferay-common-utils.version>[0.6,0.7)</biit-liferay-common-utils.version>
+		<biit-liferay-common-utils.version>[0.7,0.8)</biit-liferay-common-utils.version>
 		<surefire.version>2.16</surefire.version>
 		<project.scm.id>git</project.scm.id>
 	</properties>
@@ -87,7 +88,7 @@
 		</plugins>
 	</build>
 
-	<dependencies>		
+	<dependencies>
 		<!-- Basic Liferay Access -->
 		<dependency>
 			<groupId>com.biit.liferay</groupId>

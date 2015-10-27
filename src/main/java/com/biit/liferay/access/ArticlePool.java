@@ -3,14 +3,14 @@ package com.biit.liferay.access;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.biit.liferay.model.KbArticle;
+import com.biit.liferay.model.IArticle;
 
 public class ArticlePool {
 
 	protected final static long EXPIRATION_TIME = 300000;// 5 minutes
 
 	private Hashtable<Long, Long> insertionTime; // element id --> time
-	private Hashtable<Long, KbArticle> articles; // Roles by user.
+	private Hashtable<Long, IArticle<Long>> articles; // Roles by user.
 
 	private static ArticlePool instance = new ArticlePool();
 
@@ -24,13 +24,13 @@ public class ArticlePool {
 
 	public void reset() {
 		insertionTime = new Hashtable<Long, Long>();
-		articles = new Hashtable<Long, KbArticle>();
+		articles = new Hashtable<Long, IArticle<Long>>();
 	}
 
-	public void addArticle(KbArticle article) {
+	public void addArticle(IArticle<Long> article) {
 		if (article != null) {
-			insertionTime.put(article.getKbArticleId(), System.currentTimeMillis());
-			articles.put(article.getKbArticleId(), article);
+			insertionTime.put(article.getId(), System.currentTimeMillis());
+			articles.put(article.getId(), article);
 		}
 	}
 
@@ -39,7 +39,7 @@ public class ArticlePool {
 		articles.remove(kbArticleId);
 	}
 
-	public KbArticle getArticleByResourceKey(long resourceKey) {
+	public IArticle<Long> getArticleByResourceKey(long resourceKey) {
 		long now = System.currentTimeMillis();
 		Long kbArticleId = null;
 		if (insertionTime.size() > 0) {
