@@ -14,6 +14,7 @@ import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.IArticle;
+import com.biit.liferay.model.IKnowledgeBaseService;
 import com.biit.liferay.model.KbArticle;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> {
+public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
 	private final static String PORTLET_ID = "2_WAR_knowledgebaseportlet";
 	private SiteService siteService;
 	private CompanyService companyService;
@@ -80,6 +81,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
 	 */
+	@Override
 	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError {
 		return getLatestArticle(resourcePrimKey, 0);
@@ -98,6 +100,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
 	 */
+	@Override
 	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError {
 
@@ -122,12 +125,14 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		return null;
 	}
 
+	@Override
 	public IArticle<Long> addArticle(KbArticle article, String siteName, String virtualHost) throws ClientProtocolException, NotConnectedToWebServiceException,
 			IOException, AuthenticationRequired, WebServiceAccessError {
 		return addArticle(PORTLET_ID, article.getParentResourcePrimKey(), article.getTitle(), article.getContent(), article.getDescription(),
 				article.getSections(), "", siteName, virtualHost);
 	}
 
+	@Override
 	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content, String description, List<String> sections,
 			String dirName, String siteName, String virtualHost) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError {
@@ -175,6 +180,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		return null;
 	}
 
+	@Override
 	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
 			ArticleNotDeletedException {
 		if (article != null) {
