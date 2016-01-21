@@ -32,6 +32,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		serverConnection();
 	}
 
+	@Override
 	public void reset() {
 		ArticlePool.getInstance().reset();
 	}

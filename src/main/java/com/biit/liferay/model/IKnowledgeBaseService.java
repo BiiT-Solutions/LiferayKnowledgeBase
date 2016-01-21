@@ -29,4 +29,6 @@ public interface IKnowledgeBaseService extends LiferayService {
 	void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
 			ArticleNotDeletedException;
 
+	void reset();
+
 }
