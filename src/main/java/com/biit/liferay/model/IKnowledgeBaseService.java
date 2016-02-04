@@ -31,4 +31,10 @@ public interface IKnowledgeBaseService extends LiferayService {
 
 	void reset();
 
+	IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException,
+			IOException, AuthenticationRequired, WebServiceAccessError;
+
+	IArticle<Long> editArticle(String portletId, IArticle<Long> article)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+
 }

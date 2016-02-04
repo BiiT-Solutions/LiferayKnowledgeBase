@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
 	private final static String PORTLET_ID = "2_WAR_knowledgebaseportlet";
+	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
+	private final static String DIR_NAME = "";
 	private SiteService siteService;
 	private CompanyService companyService;
 
@@ -130,7 +132,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	public IArticle<Long> addArticle(KbArticle article, String siteName, String virtualHost) throws ClientProtocolException, NotConnectedToWebServiceException,
 			IOException, AuthenticationRequired, WebServiceAccessError {
 		return addArticle(PORTLET_ID, article.getParentResourcePrimKey(), article.getTitle(), article.getContent(), article.getDescription(),
-				article.getSections(), "", siteName, virtualHost);
+				article.getSections(), DIR_NAME, siteName, virtualHost);
 	}
 
 	@Override
@@ -139,18 +141,18 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
-		String sectonsAsString = "";
+		String sectionsAsString = "";
 		if (!sections.isEmpty()) {
-			sectonsAsString = "[";
+			sectionsAsString = "[";
 		}
 		for (String section : sections) {
-			if (sectonsAsString.length() > 1) {
-				sectonsAsString += ",";
+			if (sectionsAsString.length() > 1) {
+				sectionsAsString += ",";
 			}
-			sectonsAsString += section;
+			sectionsAsString += section;
 		}
-		if (sectonsAsString.length() > 0) {
-			sectonsAsString += "]";
+		if (sectionsAsString.length() > 0) {
+			sectionsAsString += "]";
 		}
 
 		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
@@ -166,7 +168,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		params.add(new BasicNameValuePair("title", title));
 		params.add(new BasicNameValuePair("content", content));
 		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("sections", sectonsAsString));
+		params.add(new BasicNameValuePair("sections", sectionsAsString));
 		params.add(new BasicNameValuePair("dirName", dirName));
 		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
 
@@ -196,10 +198,62 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 				ArticlePool.getInstance().removeArticle(article.getId());
 				LiferayClientLogger.info(this.getClass().getName(), "Article '" + article.getTitle() + "' deleted.");
 			} else {
-				throw new ArticleNotDeletedException("Organization '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
+				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
 			}
 
 		}
+	}
+
+	@Override
+	public IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+		return editArticle(PORTLET_ID, article);
+	}
+
+	@Override
+	public IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+		if (article != null) {
+			checkConnection();
+
+			String sectionsAsString = "";
+			if (article.getSections() != null) {
+				if (!article.getSections().isEmpty()) {
+					sectionsAsString = "[";
+				}
+				for (String section : article.getSections()) {
+					if (sectionsAsString.length() > 1) {
+						sectionsAsString += ",";
+					}
+					sectionsAsString += section;
+				}
+				if (sectionsAsString.length() > 0) {
+					sectionsAsString += "]";
+				}
+			}
+
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			if (article.getResourcePrimKey() != null) {
+				params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(article.getResourcePrimKey())));
+			} else {
+				params.add(new BasicNameValuePair("resourcePrimKey", ""));
+			}
+			params.add(new BasicNameValuePair("title", article.getTitle()));
+			params.add(new BasicNameValuePair("content", article.getContent()));
+			params.add(new BasicNameValuePair("description", article.getDescription()));
+			params.add(new BasicNameValuePair("sections", sectionsAsString));
+			params.add(new BasicNameValuePair("dirName", DIR_NAME));
+
+			String result = getHttpResponse("knowledge-base-portlet.kbarticle/update-kb-article", params);
+
+			if (result != null) {
+				// A Simple JSON Response Read
+				IArticle<Long> articleUpdated = decodeFromJson(result, KbArticle.class);
+				ArticlePool.getInstance().addArticle(articleUpdated);
+				return articleUpdated;
+			}
+		}
+		return null;
 	}
 
 }

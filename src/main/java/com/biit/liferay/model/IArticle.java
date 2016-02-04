@@ -1,5 +1,7 @@
 package com.biit.liferay.model;
 
+import java.util.List;
+
 import com.biit.usermanager.entity.IElement;
 
 public interface IArticle<ArticleId> extends IElement<ArticleId> {
@@ -10,4 +12,8 @@ public interface IArticle<ArticleId> extends IElement<ArticleId> {
 	String getTitle();
 
 	String getContent();
+
+	String getDescription();
+	
+	List<String> getSections();
 }

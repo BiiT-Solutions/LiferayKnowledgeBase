@@ -59,6 +59,7 @@ public class KbArticle implements IArticle<Long> {
 		this.createDate = createDate;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
