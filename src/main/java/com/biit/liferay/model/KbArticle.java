@@ -47,10 +47,12 @@ public class KbArticle implements IArticle<Long> {
 		return content;
 	}
 
+	@Override
 	public void setContent(String content) {
 		this.content = content;
 	}
 
+	@Override
 	public Calendar getCreateDate() {
 		return createDate;
 	}
@@ -64,6 +66,7 @@ public class KbArticle implements IArticle<Long> {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -170,6 +173,7 @@ public class KbArticle implements IArticle<Long> {
 		return title;
 	}
 
+	@Override
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -198,6 +202,7 @@ public class KbArticle implements IArticle<Long> {
 		this.uuid = uuid;
 	}
 
+	@Override
 	public int getVersion() {
 		return version;
 	}
@@ -206,6 +211,7 @@ public class KbArticle implements IArticle<Long> {
 		this.version = version;
 	}
 
+	@Override
 	public int getViewCount() {
 		return viewCount;
 	}
@@ -244,10 +250,12 @@ public class KbArticle implements IArticle<Long> {
 		return true;
 	}
 
+	@Override
 	public List<String> getSections() {
 		return sections;
 	}
 
+	@Override
 	public void setSections(List<String> sections) {
 		this.sections = sections;
 	}

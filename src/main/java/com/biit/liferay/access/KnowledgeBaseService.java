@@ -2,6 +2,7 @@ package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -266,6 +267,16 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			}
 		}
 		return null;
+	}
+
+	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) {
+		KbArticle article = new KbArticle();
+		article.setTitle(title);
+		article.setContent(content);
+		article.setDescription(description);
+		article.setSections(sections);
+
+		return article;
 	}
 
 }
