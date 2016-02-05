@@ -2,7 +2,6 @@ package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
