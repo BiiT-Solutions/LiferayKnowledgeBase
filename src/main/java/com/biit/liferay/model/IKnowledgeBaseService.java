@@ -13,28 +13,30 @@ import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 
 public interface IKnowledgeBaseService extends LiferayService {
 
-	IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
-	IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
-	IArticle<Long> addArticle(KbArticle article, String siteName, String virtualHost) throws ClientProtocolException, NotConnectedToWebServiceException,
-			IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
+			WebServiceAccessError;
 
-	IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content, String description, List<String> sections,
-			String dirName, String siteName, String virtualHost) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content,
+			String description, List<String> sections, String dirName, String siteName, String virtualHost)
+					throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+					AuthenticationRequired, WebServiceAccessError;
 
-	void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			ArticleNotDeletedException;
+	void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException,
+			IOException, AuthenticationRequired, ArticleNotDeletedException;
 
 	void reset();
 
-	IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException,
-			IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
 
-	IArticle<Long> editArticle(String portletId, IArticle<Long> article)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
 }
