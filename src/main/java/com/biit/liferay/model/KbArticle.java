@@ -12,7 +12,7 @@ public class KbArticle implements IArticle<Long> {
 	private Calendar createDate;
 	private String description;
 	private Long groupId;
-	private Long kbArticleId;
+	private long kbArticleId;
 	private boolean latest;
 	private boolean main;
 	private Calendar modifiedDate;
