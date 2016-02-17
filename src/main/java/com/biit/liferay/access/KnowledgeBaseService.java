@@ -262,6 +262,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 
 	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) {
 		KbArticle article = new KbArticle();
+		article.setParentResourcePrimKey(ARTICLE_PARENT_RESOURCE_PRIMKEY);
 		article.setTitle(title);
 		article.setContent(content);
 		article.setDescription(description);
