@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle>implements IKnowledgeBaseService {
+public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
 	private final static String PORTLET_ID = "2_WAR_knowledgebaseportlet";
 	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
 	private final static String DIR_NAME = "";
@@ -47,11 +47,10 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath,
-			String authenticationToken, String loginUser, String password) {
+	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken, String loginUser,
+			String password) {
 		// Standard behavior.
-		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
-				password);
+		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
 		// Disconnect previous connections.
 		try {
 			siteService.disconnect();
@@ -61,17 +60,14 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		}
 		// Sites are needed for some services.
 		siteService = new SiteService();
-		siteService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
-				password);
+		siteService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
 		// Sites are needed for some services.
 		companyService = new CompanyService();
-		companyService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
-				loginUser, password);
+		companyService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
 	}
 
 	@Override
-	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass)
-			throws JsonParseException, JsonMappingException, IOException {
+	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass) throws JsonParseException, JsonMappingException, IOException {
 		Set<IArticle<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbArticle>>() {
 		});
 		return myObjects;
@@ -89,8 +85,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		return getLatestArticle(resourcePrimKey, 0);
 	}
 
@@ -108,8 +104,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 
 		IArticle<Long> article = ArticlePool.getInstance().getArticleByResourceKey(resourcePrimKey);
 		if (article != null) {
@@ -133,22 +129,20 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost)
-			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
-			WebServiceAccessError {
+	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		Long parentResourcePrimKey = 0l;
 		if (article instanceof KbArticle) {
 			parentResourcePrimKey = ((KbArticle) article).getParentResourcePrimKey();
 		}
-		return addArticle(PORTLET_ID, parentResourcePrimKey, article.getTitle(), article.getContent(),
-				article.getDescription(), article.getSections(), DIR_NAME, siteName, virtualHost);
+		return addArticle(PORTLET_ID, parentResourcePrimKey, article.getTitle(), article.getContent(), article.getDescription(), article.getSections(),
+				DIR_NAME, siteName, virtualHost);
 	}
 
 	@Override
-	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content,
-			String description, List<String> sections, String dirName, String siteName, String virtualHost)
-					throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-					AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content, String description, List<String> sections,
+			String dirName, String siteName, String virtualHost) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		String sectionsAsString = "";
@@ -173,7 +167,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (parentResourcePrimKey != null) {
 			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(parentResourcePrimKey)));
 		} else {
-			params.add(new BasicNameValuePair("parentResourcePrimKey", ""));
+			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(ARTICLE_PARENT_RESOURCE_PRIMKEY)));
 		}
 		params.add(new BasicNameValuePair("title", title));
 		params.add(new BasicNameValuePair("content", content));
@@ -194,8 +188,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException,
-			IOException, AuthenticationRequired, ArticleNotDeletedException {
+	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			ArticleNotDeletedException {
 		if (article != null) {
 			checkConnection();
 
@@ -208,23 +202,21 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 				ArticlePool.getInstance().removeArticle(article.getId());
 				LiferayClientLogger.info(this.getClass().getName(), "Article '" + article.getTitle() + "' deleted.");
 			} else {
-				throw new ArticleNotDeletedException(
-						"Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
+				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
 			}
 
 		}
 	}
 
 	@Override
-	public IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException,
-			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		return editArticle(PORTLET_ID, article);
 	}
 
 	@Override
-	public IArticle<Long> editArticle(String portletId, IArticle<Long> article)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			WebServiceAccessError {
+	public IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		if (article != null) {
 			checkConnection();
 
