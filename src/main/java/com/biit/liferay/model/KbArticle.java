@@ -270,4 +270,9 @@ public class KbArticle implements IArticle<Long> {
 		return getKbArticleId() + "";
 	}
 
+	@Override
+	public String toString() {
+		return getUniqueName() + " (" + getId() + ")";
+	}
+
 }
