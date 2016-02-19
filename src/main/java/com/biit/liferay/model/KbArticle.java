@@ -272,7 +272,7 @@ public class KbArticle implements IArticle<Long> {
 
 	@Override
 	public String toString() {
-		return " (" + getId() + ")" + getContent();
+		return " (" + getId() + ") " + getContent();
 	}
 
 }
