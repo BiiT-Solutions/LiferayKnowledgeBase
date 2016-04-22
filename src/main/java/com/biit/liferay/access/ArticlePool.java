@@ -7,7 +7,7 @@ import com.biit.liferay.model.IArticle;
 
 public class ArticlePool {
 
-	protected final static long EXPIRATION_TIME = 300000;// 5 minutes
+	protected final static long EXPIRATION_TIME = 3600000;// 60 minutes
 
 	private Hashtable<Long, Long> insertionTime; // element id --> time
 	private Hashtable<Long, IArticle<Long>> articles; // Roles by user.
