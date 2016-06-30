@@ -17,12 +17,18 @@ public class KbArticle implements IArticle<Long> {
 	private boolean main;
 	private Calendar modifiedDate;
 	private Long parentResourcePrimKey;
+	private Long parentResourceClassNameId;
+	private String sourceURL;
+	private String urlTitle;
 	private int priority;
 	private Long resourcePrimKey;
 	private Long rootResourcePrimKey;
+	private Long kbFolderId;
 	// Sections are not used and causes problem with serialization.
 	@JsonIgnore
 	private List<String> sections;
+	@JsonIgnore
+	private List<String> selectedFileNames;
 	private int status;
 	private Long statusByUserId;
 	private String statusByUserName;
@@ -273,6 +279,46 @@ public class KbArticle implements IArticle<Long> {
 	@Override
 	public String toString() {
 		return "(" + getId() + ") " + getContent();
+	}
+
+	public Long getKbFolderId() {
+		return kbFolderId;
+	}
+
+	public void setKbFolderId(Long kbFolderId) {
+		this.kbFolderId = kbFolderId;
+	}
+
+	public Long getParentResourceClassNameId() {
+		return parentResourceClassNameId;
+	}
+
+	public void setParentResourceClassNameId(Long parentResourceClassNameId) {
+		this.parentResourceClassNameId = parentResourceClassNameId;
+	}
+
+	public String getSourceURL() {
+		return sourceURL;
+	}
+
+	public void setSourceURL(String sourceURL) {
+		this.sourceURL = sourceURL;
+	}
+
+	public String getUrlTitle() {
+		return urlTitle;
+	}
+
+	public void setUrlTitle(String urlTitle) {
+		this.urlTitle = urlTitle;
+	}
+
+	public List<String> getSelectedFileNames() {
+		return selectedFileNames;
+	}
+
+	public void setSelectedFileNames(List<String> selectedFileNames) {
+		this.selectedFileNames = selectedFileNames;
 	}
 
 }

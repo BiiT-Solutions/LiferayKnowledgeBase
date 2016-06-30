@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
 	private final static String PORTLET_ID = "2_WAR_knowledgebaseportlet";
 	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
+	private final static long ARTICLE_PARENT_RESOURCE_CLASSNAME = 41603l;
 	private final static String DIR_NAME = "";
 	private SiteService siteService;
 	private CompanyService companyService;
@@ -132,32 +133,26 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		Long parentResourcePrimKey = 0l;
+		Long parentResourceClassId = 0l;
+		String urlTitle = "";
+		String sourceURL = "";
+		List<String> selectedFileNames = null;
 		if (article instanceof KbArticle) {
 			parentResourcePrimKey = ((KbArticle) article).getParentResourcePrimKey();
+			parentResourceClassId = ((KbArticle) article).getParentResourceClassNameId();
+			urlTitle = ((KbArticle) article).getUrlTitle();
+			sourceURL = ((KbArticle) article).getSourceURL();
+			selectedFileNames = ((KbArticle) article).getSelectedFileNames();
 		}
-		return addArticle(PORTLET_ID, parentResourcePrimKey, article.getTitle(), article.getContent(), article.getDescription(), article.getSections(),
-				DIR_NAME, siteName, virtualHost);
+		return addArticle(PORTLET_ID, parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle, article.getContent(),
+				article.getDescription(), sourceURL, article.getSections(), selectedFileNames, siteName, virtualHost);
 	}
 
 	@Override
-	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, String title, String content, String description, List<String> sections,
-			String dirName, String siteName, String virtualHost) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle,
+			String content, String description, String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
-
-		String sectionsAsString = "";
-		if (!sections.isEmpty()) {
-			sectionsAsString = "[";
-		}
-		for (String section : sections) {
-			if (sectionsAsString.length() > 1) {
-				sectionsAsString += ",";
-			}
-			sectionsAsString += section;
-		}
-		if (sectionsAsString.length() > 0) {
-			sectionsAsString += "]";
-		}
 
 		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
 		IGroup<Long> site = siteService.getSite(company, siteName);
@@ -167,13 +162,20 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (parentResourcePrimKey != null) {
 			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(parentResourcePrimKey)));
 		} else {
-			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(ARTICLE_PARENT_RESOURCE_PRIMKEY)));
+			params.add(new BasicNameValuePair("parentResourcePrimKey", null));
+		}
+		if (parentResourceClassNameId != null) {
+			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(parentResourceClassNameId)));
+		} else {
+			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
 		}
 		params.add(new BasicNameValuePair("title", title));
+		params.add(new BasicNameValuePair("urlTitle", urlTitle));
 		params.add(new BasicNameValuePair("content", content));
 		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("sections", sectionsAsString));
-		params.add(new BasicNameValuePair("dirName", dirName));
+		params.add(new BasicNameValuePair("sourceURL", sourceURL));
+		params.add(new BasicNameValuePair("sections", convertListToJsonString(sections)));
+		params.add(new BasicNameValuePair("selectedFileNames", convertListToJsonString(selectedFileNames)));
 		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/add-kb-article", params);
@@ -220,20 +222,11 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (article != null) {
 			checkConnection();
 
-			String sectionsAsString = "";
-			if (article.getSections() != null) {
-				if (!article.getSections().isEmpty()) {
-					sectionsAsString = "[";
-				}
-				for (String section : article.getSections()) {
-					if (sectionsAsString.length() > 1) {
-						sectionsAsString += ",";
-					}
-					sectionsAsString += section;
-				}
-				if (sectionsAsString.length() > 0) {
-					sectionsAsString += "]";
-				}
+			List<String> selectedFileNames = null;
+			String sourceURL = "";
+			if (article instanceof KbArticle) {
+				sourceURL = ((KbArticle) article).getSourceURL();
+				selectedFileNames = ((KbArticle) article).getSelectedFileNames();
 			}
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -245,7 +238,10 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			params.add(new BasicNameValuePair("title", article.getTitle()));
 			params.add(new BasicNameValuePair("content", article.getContent()));
 			params.add(new BasicNameValuePair("description", article.getDescription()));
-			params.add(new BasicNameValuePair("sections", sectionsAsString));
+			params.add(new BasicNameValuePair("sourceURL", sourceURL));
+			params.add(new BasicNameValuePair("sections", convertListToJsonString(article.getSections())));
+			params.add(new BasicNameValuePair("selectedFileNames", convertListToJsonString(selectedFileNames)));
+			params.add(new BasicNameValuePair("removeFileEntryIds", convertListToJsonString(new ArrayList<String>())));
 			params.add(new BasicNameValuePair("dirName", DIR_NAME));
 
 			String result = getHttpResponse("knowledge-base-portlet.kbarticle/update-kb-article", params);
