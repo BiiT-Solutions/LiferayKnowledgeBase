@@ -22,8 +22,8 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:dev.biit-solutions.com:LiferayKnowledgeBase.git</connection>
-		<developerConnection>scm:git:dev.biit-solutions.com:LiferayKnowledgeBase.git</developerConnection>
+		<connection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</connection>
+		<developerConnection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</developerConnection>
 		<tag>liferay-knowledge-base</tag>
 	</scm>
 
