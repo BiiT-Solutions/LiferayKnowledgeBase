@@ -48,8 +48,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken, String loginUser,
-			String password) {
+	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken,
+			String loginUser, String password) {
 		// Standard behavior.
 		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
 		// Disconnect previous connections.
@@ -68,7 +68,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass) throws JsonParseException, JsonMappingException, IOException {
+	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass) throws JsonParseException,
+			JsonMappingException, IOException {
 		Set<IArticle<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbArticle>>() {
 		});
 		return myObjects;
@@ -86,8 +87,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException,
+			IOException, AuthenticationRequired, WebServiceAccessError {
 		return getLatestArticle(resourcePrimKey, 0);
 	}
 
@@ -105,8 +106,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 
 		IArticle<Long> article = ArticlePool.getInstance().getArticleByResourceKey(resourcePrimKey);
 		if (article != null) {
@@ -149,9 +150,10 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle,
-			String content, String description, String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, Long parentResourceClassNameId, String title,
+			String urlTitle, String content, String description, String sourceURL, List<String> sections, List<String> selectedFileNames,
+			String siteName, String virtualHost) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
@@ -190,8 +192,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			ArticleNotDeletedException {
+	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, ArticleNotDeletedException {
 		if (article != null) {
 			checkConnection();
 
@@ -204,21 +206,22 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 				ArticlePool.getInstance().removeArticle(article.getId());
 				LiferayClientLogger.info(this.getClass().getName(), "Article '" + article.getTitle() + "' deleted.");
 			} else {
-				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
+				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId()
+						+ ") not deleted correctly. ");
 			}
 
 		}
 	}
 
 	@Override
-	public IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException,
+			IOException, AuthenticationRequired, WebServiceAccessError {
 		return editArticle(PORTLET_ID, article);
 	}
 
 	@Override
-	public IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		if (article != null) {
 			checkConnection();
 
@@ -257,8 +260,12 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) {
+		return createArticle(title, content, description, ARTICLE_PARENT_RESOURCE_PRIMKEY, sections);
+	}
+
+	public IArticle<Long> createArticle(String title, String content, String description, long parentResourcePrimKey, List<String> sections) {
 		KbArticle article = new KbArticle();
-		article.setParentResourcePrimKey(ARTICLE_PARENT_RESOURCE_PRIMKEY);
+		article.setParentResourcePrimKey(parentResourcePrimKey);
 		article.setTitle(title);
 		article.setContent(content);
 		article.setDescription(description);
