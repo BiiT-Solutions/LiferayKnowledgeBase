@@ -234,7 +234,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			if (article.getResourcePrimKey() != null) {
-				params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(article.getResourcePrimKey())));
+				params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(((KbArticle) article).getParentResourcePrimKey())));
 			} else {
 				params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(ARTICLE_PARENT_RESOURCE_PRIMKEY)));
 			}
