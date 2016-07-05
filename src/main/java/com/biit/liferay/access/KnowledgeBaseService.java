@@ -170,7 +170,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (parentResourcePrimKey != null) {
 			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(parentResourcePrimKey)));
 		} else {
-			params.add(new BasicNameValuePair("parentResourcePrimKey", null));
+			params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(ARTICLE_PARENT_RESOURCE_PRIMKEY)));
 		}
 		if (parentResourceClassNameId != null) {
 			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(parentResourceClassNameId)));
@@ -271,11 +271,13 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		KbArticle article = new KbArticle();
 		IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 		if (className != null) {
 			article.setParentResourceClassNameId(className.getId());
+			article.setParentResourcePrimKey(0l);
 		}
 		article.setTitle(title);
 		article.setContent(content);
