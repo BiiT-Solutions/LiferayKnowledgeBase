@@ -275,7 +275,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		KbArticle article = new KbArticle();
 		IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 		if (className != null) {
-			article.setParentResourcePrimKey(className.getId());
+			article.setParentResourceClassNameId(className.getId());
 		}
 		article.setTitle(title);
 		article.setContent(content);
