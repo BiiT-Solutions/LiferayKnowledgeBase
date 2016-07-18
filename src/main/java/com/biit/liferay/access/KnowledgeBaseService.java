@@ -128,6 +128,8 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/get-latest-kb-article", params);
 
+		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
+
 		if (result != null) {
 			// A Simple JSON Response Read
 			article = decodeFromJson(result, KbArticle.class);
