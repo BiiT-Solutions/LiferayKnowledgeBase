@@ -116,7 +116,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError {
 
-		IArticle<Long> article = ArticlePool.getInstance().getArticleByResourceKey(resourcePrimKey);
+		IArticle<Long> article = ArticlePool.getInstance().getElement(resourcePrimKey);
 		if (article != null) {
 			return article;
 		}
@@ -133,7 +133,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (result != null) {
 			// A Simple JSON Response Read
 			article = decodeFromJson(result, KbArticle.class);
-			ArticlePool.getInstance().addArticle(article);
+			ArticlePool.getInstance().addElement(article);
 			return article;
 		}
 		return null;
@@ -199,7 +199,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 		if (result != null) {
 			// A Simple JSON Response Read
 			IArticle<Long> article = decodeFromJson(result, KbArticle.class);
-			ArticlePool.getInstance().addArticle(article);
+			ArticlePool.getInstance().addElement(article);
 			return article;
 		}
 		return null;
@@ -217,7 +217,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			String result = getHttpResponse("role/delete-role", params);
 
 			if (result == null || result.length() < 3) {
-				ArticlePool.getInstance().removeArticle(article.getId());
+				ArticlePool.getInstance().removeElement(article.getId());
 				LiferayClientLogger.info(this.getClass().getName(), "Article '" + article.getTitle() + "' deleted.");
 			} else {
 				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
@@ -265,7 +265,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			if (result != null) {
 				// A Simple JSON Response Read
 				IArticle<Long> articleUpdated = decodeFromJson(result, KbArticle.class);
-				ArticlePool.getInstance().addArticle(articleUpdated);
+				ArticlePool.getInstance().addElement(articleUpdated);
 				return articleUpdated;
 			}
 		}
