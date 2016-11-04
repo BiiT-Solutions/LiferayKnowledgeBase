@@ -11,7 +11,7 @@ public class KnowledgeBaseConfigurationReader extends ConfigurationReader {
 	private static final String SYSTEM_VARIABLE_CONFIG = "USER_MANAGER_CONFIG";
 
 	// Tags
-	private static final String ARTICLE_EXPIRATION_TIME = "knowledgebase.article.expiration";
+	private static final String ARTICLE_EXPIRATION_TIME = "knowledgebase.article.pool.expiration";
 
 	// Default
 	private static final String DEFAULT_EXPIRATION_TIME = "300000";
