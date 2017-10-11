@@ -36,14 +36,14 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	}
 
 	@Override
-	public IFileEntry<Long> addFile(long repositoryGroupId, long folderId, String sourceFileName, String mimeType, String title, String description,
+	public IFileEntry<Long> addFile(long siteGroupId, long folderId, String sourceFileName, String mimeType, String title, String description,
 			String changeLog, File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired,
 			WebServiceAccessError {
 		checkConnection();
 
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-		builder.addPart("repositoryId", new StringBody(Long.toString(repositoryGroupId), ContentType.TEXT_PLAIN));
+		builder.addPart("repositoryId", new StringBody(Long.toString(siteGroupId), ContentType.TEXT_PLAIN));
 		builder.addPart("folderId", new StringBody(Long.toString(folderId), ContentType.TEXT_PLAIN));
 		builder.addPart("sourceFileName", new StringBody(sourceFileName, ContentType.TEXT_PLAIN));
 		builder.addPart("mimeType", new StringBody(mimeType, ContentType.TEXT_PLAIN));
@@ -64,7 +64,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	}
 
 	@Override
-	public Set<IFileEntry<Long>> getFileEntries(long repositoryGroupId, long folderId) throws NotConnectedToWebServiceException, ClientProtocolException,
+	public Set<IFileEntry<Long>> getFileEntries(long siteGroupId, long folderId) throws NotConnectedToWebServiceException, ClientProtocolException,
 			IOException, AuthenticationRequired {
 		Set<IFileEntry<Long>> files = new HashSet<IFileEntry<Long>>();
 
@@ -72,7 +72,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryGroupId)));
+		params.add(new BasicNameValuePair("repositoryId", Long.toString(siteGroupId)));
 		params.add(new BasicNameValuePair("folderId", Long.toString(folderId)));
 
 		String result = getHttpResponse("dlapp/get-file-entries", params);
