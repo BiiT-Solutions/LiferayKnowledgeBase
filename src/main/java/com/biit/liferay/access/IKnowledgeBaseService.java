@@ -1,4 +1,4 @@
-package com.biit.liferay.model;
+package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,6 +9,7 @@ import com.biit.liferay.access.LiferayService;
 import com.biit.liferay.access.exceptions.ArticleNotDeletedException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
+import com.biit.liferay.model.IArticle;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 
 public interface IKnowledgeBaseService extends LiferayService {

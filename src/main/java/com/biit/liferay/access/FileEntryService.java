@@ -3,6 +3,7 @@ package com.biit.liferay.access;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,49 +14,19 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.biit.liferay.access.exceptions.DocumentNotDeletedException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.FileEntry;
 import com.biit.liferay.model.IFileEntry;
-import com.biit.liferay.model.IFileService;
-import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileService {
-	private SiteService siteService;
-	private CompanyService companyService;
-
-	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken, String loginUser,
-			String password) {
-		// Standard behavior.
-		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
-		// Disconnect previous connections.
-		try {
-			siteService.disconnect();
-			companyService.disconnect();
-		} catch (Exception e) {
-
-		}
-		// Sites are needed for some services.
-		siteService = new SiteService();
-		siteService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
-		// Sites are needed for some services.
-		companyService = new CompanyService();
-		companyService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
-	}
-
-	@Override
-	public void disconnect() {
-		super.disconnect();
-		siteService.disconnect();
-		companyService.disconnect();
-	}
+public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileEntryService {
 
 	@Override
 	public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1) throws JsonParseException, JsonMappingException, IOException {
@@ -65,17 +36,14 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	}
 
 	@Override
-	public IFileEntry<Long> addFile(long repositoryId, long folderId, String sourceFileName, String mimeType, String title, String description,
-			String changeLog, File file, String siteName, String virtualHost) throws ClientProtocolException, IOException, NotConnectedToWebServiceException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IFileEntry<Long> addFile(long repositoryGroupId, long folderId, String sourceFileName, String mimeType, String title, String description,
+			String changeLog, File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired,
+			WebServiceAccessError {
 		checkConnection();
-
-		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
-		IGroup<Long> site = siteService.getSite(company, siteName);
 
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-		builder.addPart("repositoryId", new StringBody(Long.toString(repositoryId), ContentType.TEXT_PLAIN));
+		builder.addPart("repositoryId", new StringBody(Long.toString(repositoryGroupId), ContentType.TEXT_PLAIN));
 		builder.addPart("folderId", new StringBody(Long.toString(folderId), ContentType.TEXT_PLAIN));
 		builder.addPart("sourceFileName", new StringBody(sourceFileName, ContentType.TEXT_PLAIN));
 		builder.addPart("mimeType", new StringBody(mimeType, ContentType.TEXT_PLAIN));
@@ -96,7 +64,49 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	}
 
 	@Override
-	public IFileEntry<Long> geFileDefinition(long fileEntryId) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+	public Set<IFileEntry<Long>> getFileEntries(long repositoryGroupId, long folderId) throws NotConnectedToWebServiceException, ClientProtocolException,
+			IOException, AuthenticationRequired {
+		Set<IFileEntry<Long>> files = new HashSet<IFileEntry<Long>>();
+
+		// Look up files in the liferay.
+		checkConnection();
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryGroupId)));
+		params.add(new BasicNameValuePair("folderId", Long.toString(folderId)));
+
+		String result = getHttpResponse("dlapp/get-file-entries", params);
+		if (result != null) {
+			// A Simple JSON Response Read
+			files = decodeListFromJson(result, FileEntry.class);
+			LiferayClientLogger.debug(this.getClass().getName(), "Obtained '" + files + "'.");
+		}
+
+		return files;
+	}
+
+	@Override
+	public void deleteFile(IFileEntry<Long> fileEntry) throws DocumentNotDeletedException, NotConnectedToWebServiceException, ClientProtocolException,
+			IOException, AuthenticationRequired {
+		if (fileEntry != null) {
+			checkConnection();
+
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("fileEntryId", fileEntry.getId() + ""));
+
+			String result = getHttpResponse("dlapp/delete-file-entry", params);
+
+			if (result == null || result.length() < 3) {
+				FileEntryPool.getInstance().removeElement(fileEntry.getId());
+				LiferayClientLogger.info(this.getClass().getName(), "Document '" + fileEntry.getUniqueName() + "' deleted.");
+			} else {
+				throw new DocumentNotDeletedException("Document '" + fileEntry.getUniqueName() + "' (id:" + fileEntry.getId() + ") not deleted correctly. ");
+			}
+		}
+	}
+
+	@Override
+	public IFileEntry<Long> geFileEntry(long fileEntryId) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError {
 
 		IFileEntry<Long> fileEntry = FileEntryPool.getInstance().getElement(fileEntryId);
@@ -124,7 +134,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	@Override
 	public String getFileRelativeUrl(long fileEntryId) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
 			WebServiceAccessError {
-		IFileEntry<Long> fileEntry = geFileDefinition(fileEntryId);
+		IFileEntry<Long> fileEntry = geFileEntry(fileEntryId);
 		if (fileEntry == null) {
 			return "";
 		}

@@ -1,17 +1,20 @@
-package com.biit.liferay.model;
+package com.biit.liferay.access;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.biit.liferay.access.exceptions.DocumentNotDeletedException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
+import com.biit.liferay.model.IFileEntry;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 
-public interface IFileService {
+public interface IFileEntryService {
 
-	IFileEntry<Long> geFileDefinition(long fileEntryId) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+	IFileEntry<Long> geFileEntry(long fileEntryId) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
 			WebServiceAccessError;
 
 	String getFileRelativeUrl(long fileEntryId) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
@@ -19,7 +22,7 @@ public interface IFileService {
 
 	/**
 	 * Can add a document or media to a site. Errors only returns the title of
-	 * the document but no informaiton.
+	 * the document but no information.
 	 * 
 	 * @param repositoryId
 	 * @param folderId
@@ -30,8 +33,6 @@ public interface IFileService {
 	 * @param description
 	 * @param changeLog
 	 * @param file
-	 * @param siteName
-	 * @param virtualHost
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
@@ -40,7 +41,12 @@ public interface IFileService {
 	 * @throws WebServiceAccessError
 	 */
 	IFileEntry<Long> addFile(long repositoryId, long folderId, String sourceFileName, String mimeType, String title, String description, String changeLog,
-			File file, String siteName, String virtualHost) throws ClientProtocolException, IOException, NotConnectedToWebServiceException,
-			AuthenticationRequired, WebServiceAccessError;
+			File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired, WebServiceAccessError;
+
+	void deleteFile(IFileEntry<Long> fileEntry) throws DocumentNotDeletedException, NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired;
+
+	Set<IFileEntry<Long>> getFileEntries(long repositoryId, long folderId) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired;
 
 }

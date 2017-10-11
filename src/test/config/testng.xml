@@ -1,12 +1,16 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite thread-count="1" verbose="1" name="LifeayKnowledgeBase">
-	<test name="LifeayKnowledgeBaseTest" enabled="true" preserve-order="true">
+	<test name="LifeayKnowledgeBaseTest" enabled="true"
+		preserve-order="true">
 		<groups>
 			<run>
 				<include name="connection" />
+				<include name="siteAccess" />
 				<include name="companyAccess" />
 				<include name="articleAccess" />
+				<include name="repository" />
 				<include name="fileEntry" />
+				<include name="deleteData" />
 			</run>
 		</groups>
 		<classes>

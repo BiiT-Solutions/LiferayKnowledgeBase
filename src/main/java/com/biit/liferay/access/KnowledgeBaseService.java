@@ -14,7 +14,6 @@ import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.IArticle;
-import com.biit.liferay.model.IKnowledgeBaseService;
 import com.biit.liferay.model.KbArticle;
 import com.biit.usermanager.entity.IElement;
 import com.biit.usermanager.entity.IGroup;

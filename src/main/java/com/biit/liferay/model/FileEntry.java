@@ -296,4 +296,9 @@ public class FileEntry implements IFileEntry<Long> {
 		this.version = version;
 	}
 
+	@Override
+	public String getUniqueName() {
+		return getTitle() + " (" + getId() + ")";
+	}
+
 }

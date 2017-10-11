@@ -8,8 +8,6 @@ import com.biit.utils.pool.PoolElement;
 
 public interface IArticle<ArticleId> extends IElement<ArticleId>, PoolElement<ArticleId> {
 
-	String getUniqueName();
-
 	Long getResourcePrimKey();
 
 	String getTitle();
