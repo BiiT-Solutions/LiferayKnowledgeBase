@@ -12,5 +12,7 @@ public interface IFileEntry<FileEntryId> extends IElement<FileEntryId>, PoolElem
 	String getTitle();
 
 	String getUuid();
+	
+	String getName();
 
 }

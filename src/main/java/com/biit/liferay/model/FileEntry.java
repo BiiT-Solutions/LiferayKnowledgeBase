@@ -206,6 +206,7 @@ public class FileEntry implements IFileEntry<Long> {
 		this.modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
