@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.biit.liferay</groupId>
 	<artifactId>liferay-knowledge-base</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.20-SNAPSHOT</version>
+	<version>0.1.20</version>
 	<name>Access to Liferay Knowledge Base</name>
 	<description>Services to retrieve articles from Liferay knowledge base.</description>
 
@@ -25,7 +24,7 @@
 	<scm>
 		<connection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</connection>
 		<developerConnection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</developerConnection>
-		<tag>liferay-knowledge-base</tag>
+		<tag>liferay-knowledge-base-0.1.20</tag>
 	</scm>
 
 	<properties>
