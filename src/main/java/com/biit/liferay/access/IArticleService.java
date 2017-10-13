@@ -39,4 +39,11 @@ public interface IArticleService extends LiferayService {
 	IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
 
+	IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost) throws ClientProtocolException, NotConnectedToWebServiceException,
+			IOException, AuthenticationRequired, WebServiceAccessError;
+
+	IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle, String content, String description,
+			String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+
 }
