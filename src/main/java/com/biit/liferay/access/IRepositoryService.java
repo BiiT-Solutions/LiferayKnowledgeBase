@@ -18,9 +18,6 @@ public interface IRepositoryService {
 	IRepository<Long> addRespository(IGroup<Long> site, String name, String description) throws NotConnectedToWebServiceException, ClientProtocolException,
 			IOException, AuthenticationRequired, WebServiceAccessError;
 
-	IRepository<Long> addRespository(IGroup<Long> site, String name, String description, String portletId) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
-
 	IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
 			WebServiceAccessError, AuthenticationRequired;
 

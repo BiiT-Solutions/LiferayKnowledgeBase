@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IRepositoryService {
 	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
-	private final static String PORTLET_ID = "3_WAR_knowledgebaseportlet";
 
 	private ClassNameService classNameService;
 
@@ -61,12 +60,6 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 	@Override
 	public IRepository<Long> addRespository(IGroup<Long> site, String name, String description) throws NotConnectedToWebServiceException,
 			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
-		return addRespository(site, name, description, PORTLET_ID);
-	}
-
-	@Override
-	public IRepository<Long> addRespository(IGroup<Long> site, String name, String description, String portletId) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -81,7 +74,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 		params.add(new BasicNameValuePair("parentFolderId", "1"));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("portletId", portletId));
+		params.add(new BasicNameValuePair("portletId", PortletId.DOCUMENT_AND_MEDIA.getId()));
 		params.add(new BasicNameValuePair("typeSettingsProperties", "{}"));
 
 		String result = getHttpResponse("repository/add-repository", params);

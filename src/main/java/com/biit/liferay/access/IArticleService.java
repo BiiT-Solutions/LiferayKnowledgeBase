@@ -13,7 +13,7 @@ import com.biit.liferay.model.IArticle;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 
-public interface IKnowledgeBaseService extends LiferayService {
+public interface IArticleService extends LiferayService {
 
 	IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError;
@@ -21,12 +21,12 @@ public interface IKnowledgeBaseService extends LiferayService {
 	IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, WebServiceAccessError;
 
-	IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException,
-			IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
+			AuthenticationRequired, WebServiceAccessError;
 
-	IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle, String content,
-			String description, String sourceURL, List<String> sections, List<String> selectedFileNames, IGroup<Long> site)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle, String content, String description,
+			String sourceURL, List<String> sections, List<String> selectedFileNames, IGroup<Long> site) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
 	void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
 			ArticleNotDeletedException;
@@ -35,9 +35,6 @@ public interface IKnowledgeBaseService extends LiferayService {
 
 	IArticle<Long> editArticle(IArticle<Long> article) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
 			WebServiceAccessError;
-
-	IArticle<Long> editArticle(String portletId, IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError;
 
 	IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
