@@ -23,8 +23,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
-	private final static String PORTLET_ID = "2_WAR_knowledgebaseportlet";
+public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> implements IKnowledgeBaseService {
+	private final static String PORTLET_ID = "3_WAR_knowledgebaseportlet";
 	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
 	private final static long ARTICLE_PARENT_RESOURCE_CLASSNAME = 41603l;
 	private final static String ARTICLE_PARENT_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
@@ -33,7 +33,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	private CompanyService companyService;
 	private ClassNameService classNameService;
 
-	public KnowledgeBaseService() {
+	public ArticleService() {
 		serverConnection();
 	}
 
