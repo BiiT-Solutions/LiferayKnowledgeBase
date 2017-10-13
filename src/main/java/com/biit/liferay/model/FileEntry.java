@@ -94,6 +94,7 @@ public class FileEntry implements IFileEntry<Long> {
 		this.classPK = classPK;
 	}
 
+	@Override
 	public Long getCompanyId() {
 		return companyId;
 	}

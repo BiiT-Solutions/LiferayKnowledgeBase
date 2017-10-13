@@ -15,4 +15,6 @@ public interface IFileEntry<FileEntryId> extends IElement<FileEntryId>, PoolElem
 	
 	String getName();
 
+	Long getCompanyId();
+
 }
