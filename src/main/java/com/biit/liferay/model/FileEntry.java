@@ -67,7 +67,7 @@ public class FileEntry implements IFileEntry<Long> {
 
 	@Override
 	public String toString() {
-		return title + "." + extension;
+		return title;
 	}
 
 	public Long getFileEntryId() {

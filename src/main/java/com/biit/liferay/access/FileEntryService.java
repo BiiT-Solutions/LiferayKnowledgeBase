@@ -15,6 +15,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.biit.liferay.access.exceptions.DocumentNotDeletedException;
+import com.biit.liferay.access.exceptions.DuplicatedFileException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileEntryService {
+	private final static String DUPLICATED_FILE = "DuplicateFileException";
 
 	@Override
 	public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1) throws JsonParseException, JsonMappingException, IOException {
@@ -38,7 +40,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	@Override
 	public IFileEntry<Long> addFile(long siteGroupId, long folderId, String sourceFileName, String mimeType, String title, String description,
 			String changeLog, File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired,
-			WebServiceAccessError {
+			WebServiceAccessError, DuplicatedFileException {
 		checkConnection();
 
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -56,9 +58,16 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 
 		if (result != null) {
 			// A Simple JSON Response Read
-			IFileEntry<Long> fileEntry = decodeFromJson(result, FileEntry.class);
-			FileEntryPool.getInstance().addElement(fileEntry);
-			return fileEntry;
+			try {
+				IFileEntry<Long> fileEntry = decodeFromJson(result, FileEntry.class);
+				FileEntryPool.getInstance().addElement(fileEntry);
+				return fileEntry;
+			} catch (WebServiceAccessError wsae) {
+				if (wsae.getMessage().contains(DUPLICATED_FILE)) {
+					throw new DuplicatedFileException("File '" + sourceFileName + "' already exists on this folder.");
+				}
+				throw wsae;
+			}
 		}
 		return null;
 	}

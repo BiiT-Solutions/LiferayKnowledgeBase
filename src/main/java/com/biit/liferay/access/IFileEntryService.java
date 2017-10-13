@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.http.client.ClientProtocolException;
 
 import com.biit.liferay.access.exceptions.DocumentNotDeletedException;
+import com.biit.liferay.access.exceptions.DuplicatedFileException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.model.IFileEntry;
@@ -39,9 +40,10 @@ public interface IFileEntryService {
 	 * @throws NotConnectedToWebServiceException
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
+	 * @throws DuplicatedFileException 
 	 */
 	IFileEntry<Long> addFile(long repositoryId, long folderId, String sourceFileName, String mimeType, String title, String description, String changeLog,
-			File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired, WebServiceAccessError;
+			File file) throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired, WebServiceAccessError, DuplicatedFileException;
 
 	void deleteFile(IFileEntry<Long> fileEntry) throws DocumentNotDeletedException, NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired;
