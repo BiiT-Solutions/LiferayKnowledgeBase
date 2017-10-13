@@ -139,7 +139,7 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 	}
 
 	@Override
-	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost) throws ClientProtocolException,
+	public IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		Long parentResourcePrimKey = 0l;
 		Long parentResourceClassId = 0l;
@@ -154,17 +154,14 @@ public class KnowledgeBaseService extends ServiceAccess<IArticle<Long>, KbArticl
 			selectedFileNames = ((KbArticle) article).getSelectedFileNames();
 		}
 		return addArticle(PORTLET_ID, parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle, article.getContent(),
-				article.getDescription(), sourceURL, article.getSections(), selectedFileNames, siteName, virtualHost);
+				article.getDescription(), sourceURL, article.getSections(), selectedFileNames, site);
 	}
 
 	@Override
 	public IArticle<Long> addArticle(String portletId, Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle,
-			String content, String description, String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
+			String content, String description, String sourceURL, List<String> sections, List<String> selectedFileNames, IGroup<Long> site)
 			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
-
-		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
-		IGroup<Long> site = siteService.getSite(company, siteName);
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("portletId", portletId));
