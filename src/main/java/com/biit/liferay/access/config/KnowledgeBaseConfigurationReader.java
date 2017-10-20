@@ -13,6 +13,7 @@ public class KnowledgeBaseConfigurationReader extends ConfigurationReader {
 	// Tags
 	private static final String ARTICLE_EXPIRATION_TIME = "knowledgebase.article.pool.expiration";
 	private static final String FILE_EXPIRATION_TIME = "knowledgebase.file.pool.expiration";
+	private static final String FOLDER_EXPIRATION_TIME = "knowledgebase.folder.pool.expiration";
 
 	// Default
 	private static final String DEFAULT_EXPIRATION_TIME = "300000";
@@ -61,6 +62,14 @@ public class KnowledgeBaseConfigurationReader extends ConfigurationReader {
 	public Long getFileEntryPoolExpirationTime() {
 		try {
 			return Long.parseLong(getPropertyLogException(FILE_EXPIRATION_TIME));
+		} catch (Exception e) {
+			return Long.parseLong(DEFAULT_EXPIRATION_TIME);
+		}
+	}
+
+	public Long getFolderPoolExpirationTime() {
+		try {
+			return Long.parseLong(getPropertyLogException(FOLDER_EXPIRATION_TIME));
 		} catch (Exception e) {
 			return Long.parseLong(DEFAULT_EXPIRATION_TIME);
 		}
