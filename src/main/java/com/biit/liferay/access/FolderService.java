@@ -15,13 +15,14 @@ import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.DLFolder;
 import com.biit.liferay.model.IFolder;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DLFolderService extends ServiceAccess<IFolder<Long>, DLFolder> implements IFolderService {
+public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implements IFolderService {
 
 	@Override
 	public Set<IFolder<Long>> decodeListFromJson(String json, Class<DLFolder> objectClass) throws JsonParseException, JsonMappingException, IOException {
@@ -31,14 +32,18 @@ public class DLFolderService extends ServiceAccess<IFolder<Long>, DLFolder> impl
 	}
 
 	@Override
-	public IFolder<Long> addFolder(long parentFolderId, String name, String description) throws ClientProtocolException, NotConnectedToWebServiceException,
-			IOException, AuthenticationRequired, WebServiceAccessError {
+	public IFolder<Long> addFolder(long groupId, long repositoryId, boolean monuntPoint, long parentFolderId, String name, String description, IGroup<Long> site)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("groupId", Long.toString(groupId)));
+		params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryId)));
+		params.add(new BasicNameValuePair("mountPoint", Boolean.toString(monuntPoint)));
 		params.add(new BasicNameValuePair("parentFolderId", Long.toString(parentFolderId)));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
+		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
 
 		String result = getHttpResponse("dlfolder/add-folder", params);
 

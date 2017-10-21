@@ -31,7 +31,9 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 	@Override
 	public void disconnect() {
 		super.disconnect();
-		classNameService.disconnect();
+		if (classNameService != null) {
+			classNameService.disconnect();
+		}
 	}
 
 	@Override

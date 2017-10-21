@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="1" verbose="1" name="LifeayKnowledgeBase">
+<suite thread-count="1" verbose="1" name="LifeayKnowledgeBase" parallel="none">
 	<test name="LifeayKnowledgeBaseTest" enabled="true"
 		preserve-order="true">
 		<groups>
@@ -14,7 +14,7 @@
 			</run>
 		</groups>
 		<classes>
-			<class name="com.biit.liferay.test.ArticleTest" />
+			<class name="com.biit.liferay.test.ArticleTest" /> 
 			<class name="com.biit.liferay.test.FileEntryTest" />
 		</classes>
 	</test>
