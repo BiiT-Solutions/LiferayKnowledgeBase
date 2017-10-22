@@ -208,8 +208,8 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("content", content));
 		params.add(new BasicNameValuePair("description", description));
 		params.add(new BasicNameValuePair("sourceURL", sourceURL));
-		params.add(new BasicNameValuePair("sections", convertListToJsonString(sections)));
-		params.add(new BasicNameValuePair("selectedFileNames", convertListToJsonString(selectedFileNames)));
+		params.add(new BasicNameValuePair("sections", convertToJson(sections)));
+		params.add(new BasicNameValuePair("selectedFileNames", convertToJson(selectedFileNames)));
 		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/add-kb-article", params);
@@ -252,8 +252,8 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("content", content));
 		params.add(new BasicNameValuePair("description", description));
 		params.add(new BasicNameValuePair("sourceURL", sourceURL));
-		params.add(new BasicNameValuePair("sections", convertListToJsonString(sections)));
-		params.add(new BasicNameValuePair("selectedFileNames", convertListToJsonString(selectedFileNames)));
+		params.add(new BasicNameValuePair("sections", convertToJson(sections)));
+		params.add(new BasicNameValuePair("selectedFileNames", convertToJson(selectedFileNames)));
 		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/add-kb-article", params);
@@ -313,9 +313,9 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			params.add(new BasicNameValuePair("content", article.getContent()));
 			params.add(new BasicNameValuePair("description", article.getDescription()));
 			params.add(new BasicNameValuePair("sourceURL", sourceURL));
-			params.add(new BasicNameValuePair("sections", convertListToJsonString(article.getSections())));
-			params.add(new BasicNameValuePair("selectedFileNames", convertListToJsonString(selectedFileNames)));
-			params.add(new BasicNameValuePair("removeFileEntryIds", convertListToJsonString(new ArrayList<String>())));
+			params.add(new BasicNameValuePair("sections", convertToJson(article.getSections())));
+			params.add(new BasicNameValuePair("selectedFileNames", convertToJson(selectedFileNames)));
+			params.add(new BasicNameValuePair("removeFileEntryIds", convertToJson(new ArrayList<String>())));
 			params.add(new BasicNameValuePair("dirName", DIR_NAME));
 
 			String result = getHttpResponse("knowledge-base-portlet.kbarticle/update-kb-article", params);
