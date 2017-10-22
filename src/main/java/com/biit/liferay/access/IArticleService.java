@@ -28,8 +28,8 @@ public interface IArticleService extends LiferayService {
 			String sourceURL, List<String> sections, List<String> selectedFileNames, IGroup<Long> site) throws NotConnectedToWebServiceException,
 			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
-	void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			ArticleNotDeletedException;
+	IArticle<Long> deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, ArticleNotDeletedException, WebServiceAccessError;
 
 	void reset();
 

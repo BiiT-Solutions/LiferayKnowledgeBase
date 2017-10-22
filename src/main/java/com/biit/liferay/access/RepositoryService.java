@@ -8,15 +8,18 @@ import java.util.Set;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
+import org.junit.Assert;
 
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.RepositoryNotDeletedException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
+import com.biit.liferay.model.IFolder;
 import com.biit.liferay.model.IRepository;
 import com.biit.liferay.model.Repository;
 import com.biit.usermanager.entity.IElement;
 import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,14 +28,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IRepositoryService {
 	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
+	private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
 
 	private ClassNameService classNameService;
+	private FolderService folderService;
+	private UserService userService;
 
 	@Override
 	public void disconnect() {
 		super.disconnect();
 		if (classNameService != null) {
 			classNameService.disconnect();
+		}
+		if (folderService != null) {
+			folderService.disconnect();
+		}
+		if (userService != null) {
+			userService.disconnect();
 		}
 	}
 
@@ -50,6 +62,23 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 		// classNames are needed to add an article.
 		classNameService = new ClassNameService();
 		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+
+		// Repository needs some basic folders.
+		try {
+			folderService.disconnect();
+		} catch (Exception e) {
+
+		}
+		folderService = new FolderService();
+		folderService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		// Repository needs some basic folders.
+		try {
+			userService.disconnect();
+		} catch (Exception e) {
+
+		}
+		userService = new UserService();
+		userService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
 	}
 
 	@Override
@@ -88,7 +117,25 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 			return repository;
 		}
 		return null;
+	}
 
+	@Override
+	@Deprecated
+	public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+		// Get user for folders
+		IUser<Long> user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
+		// Create basic site DLFolder.
+		IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
+		Assert.assertNotNull(parentFolder);
+		IFolder<Long> repositoryFolder = folderService.addFolder(site.getId(), repository.getId(), false, parentFolder.getId(), Long.toString(user.getId()),
+				DEFAULT_DLFOLDER_DESCRIPTION, site);
+		Assert.assertNotNull(repositoryFolder);
+
+		// Create adminPortlet Folder.
+		IFolder<Long> portletFolder = folderService.addFolder(site.getId(), repository.getId(), false, repositoryFolder.getId(),
+				PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION, site);
+		Assert.assertNotNull(portletFolder);
 	}
 
 	@Override

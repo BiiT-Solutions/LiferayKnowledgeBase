@@ -24,4 +24,20 @@ public interface IRepositoryService {
 	boolean deleteRepository(IRepository<Long> repository) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, RepositoryNotDeletedException;
 
+	/**
+	 * A repository needs some default folders to allow the upload.
+	 * 
+	 * @param repository
+	 * @param company
+	 * @param site
+	 * @throws ClientProtocolException
+	 * @throws NotConnectedToWebServiceException
+	 * @throws IOException
+	 * @throws AuthenticationRequired
+	 * @throws WebServiceAccessError
+	 */
+	@Deprecated
+	void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site) throws ClientProtocolException,
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
+
 }

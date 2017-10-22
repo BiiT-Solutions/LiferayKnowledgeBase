@@ -268,24 +268,26 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public void deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			ArticleNotDeletedException {
+	public IArticle<Long> deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired, ArticleNotDeletedException, WebServiceAccessError {
 		if (article != null) {
 			checkConnection();
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("resourcePrimKey", article.getResourcePrimKey() + ""));
 
-			String result = getHttpResponse("role/delete-role", params);
-
-			if (result == null || result.length() < 3) {
-				ArticlePool.getInstance().removeElement(article.getId());
-				LiferayClientLogger.info(this.getClass().getName(), "Article '" + article.getTitle() + "' deleted.");
+			String result = getHttpResponse("knowledge-base-portlet.kbarticle/delete-kb-article", params);
+			if (result != null) {
+				// A Simple JSON Response Read
+				IArticle<Long> articleDeleted = decodeFromJson(result, KbArticle.class);
+				ArticlePool.getInstance().addElement(articleDeleted);
+				LiferayClientLogger.info(this.getClass().getName(), "Article '" + articleDeleted.getTitle() + "' deleted.");
+				return articleDeleted;
 			} else {
 				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
 			}
-
 		}
+		return null;
 	}
 
 	@Override
