@@ -158,7 +158,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 
 	public static String getFileAbsoluteUrl(IFileEntry<Long> fileEntry) {
 		return LiferayConfigurationReader.getInstance().getLiferayProtocol() + "://" + LiferayConfigurationReader.getInstance().getHost() + ":"
-				+ LiferayConfigurationReader.getInstance().getConnectionPort() + "/" + LiferayConfigurationReader.getInstance().getVirtualHost() + "/"
+				+ LiferayConfigurationReader.getInstance().getConnectionPort() + "/" + LiferayConfigurationReader.getInstance().getVirtualHost()
 				+ getFileRelativeUrl(fileEntry);
 	}
 
