@@ -18,6 +18,7 @@ import com.biit.liferay.access.exceptions.DocumentNotDeletedException;
 import com.biit.liferay.access.exceptions.DuplicatedFileException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
+import com.biit.liferay.configuration.LiferayConfigurationReader;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.FileEntry;
 import com.biit.liferay.model.IFileEntry;
@@ -147,13 +148,18 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 		return getFileRelativeUrl(fileEntry);
 	}
 
-	public static String getFileRelativeUrl(IFileEntry<Long> fileEntry) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public static String getFileRelativeUrl(IFileEntry<Long> fileEntry) {
 		if (fileEntry == null) {
 			return "";
 		}
 		return "/documents/" + fileEntry.getGroupId() + File.separator + fileEntry.getFolderId() + File.separator + fileEntry.getTitle() + File.separator
 				+ fileEntry.getUuid();
+	}
+
+	public static String getFileAbsoluteUrl(IFileEntry<Long> fileEntry) {
+		return LiferayConfigurationReader.getInstance().getLiferayProtocol() + "://" + LiferayConfigurationReader.getInstance().getHost() + ":"
+				+ LiferayConfigurationReader.getInstance().getConnectionPort() + "/" + LiferayConfigurationReader.getInstance().getVirtualHost() + "/"
+				+ getFileRelativeUrl(fileEntry);
 	}
 
 	public class Message {
