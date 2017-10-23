@@ -144,6 +144,11 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 	public String getFileRelativeUrl(long fileEntryId) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
 			WebServiceAccessError {
 		IFileEntry<Long> fileEntry = geFileEntry(fileEntryId);
+		return getFileRelativeUrl(fileEntry);
+	}
+
+	public static String getFileRelativeUrl(IFileEntry<Long> fileEntry) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
+			AuthenticationRequired, WebServiceAccessError {
 		if (fileEntry == null) {
 			return "";
 		}
