@@ -268,6 +268,25 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
+	public Integer getArticlesCount(IGroup<Long> site) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
+		checkConnection();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("groupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("status", "0"));
+
+		String result = getHttpResponse("/knowledge-base-portlet.kbarticle/get-group-kb-articles-count", params);
+
+		if (result != null) {
+			try {
+				return Integer.parseInt(result);
+			} catch (NumberFormatException nfe) {
+				LiferayClientLogger.errorMessage(this.getClass().getName(), nfe);
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public IArticle<Long> deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
 			AuthenticationRequired, ArticleNotDeletedException, WebServiceAccessError {
 		if (article != null) {

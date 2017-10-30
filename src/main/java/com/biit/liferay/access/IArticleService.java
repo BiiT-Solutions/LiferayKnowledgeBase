@@ -46,4 +46,6 @@ public interface IArticleService extends LiferayService {
 			String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
 			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
+	Integer getArticlesCount(IGroup<Long> site) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired;
+
 }
