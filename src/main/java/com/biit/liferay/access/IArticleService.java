@@ -2,6 +2,7 @@ package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -47,5 +48,10 @@ public interface IArticleService extends LiferayService {
 			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
 
 	Integer getArticlesCount(IGroup<Long> site) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired;
+
+	Set<IArticle<Long>> getArticles(IGroup<Long> site, int start, int end) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
+			AuthenticationRequired;
+
+	Set<IArticle<Long>> getArticles(IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired;
 
 }

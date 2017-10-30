@@ -2,6 +2,7 @@ package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -284,6 +285,33 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Set<IArticle<Long>> getArticles(IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
+			AuthenticationRequired {
+		return getArticles(site, 0, 1000);
+	}
+
+	@Override
+	public Set<IArticle<Long>> getArticles(IGroup<Long> site, int start, int end) throws NotConnectedToWebServiceException, ClientProtocolException,
+			IOException, AuthenticationRequired {
+		checkConnection();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("groupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("status", "0"));
+		params.add(new BasicNameValuePair("start", Integer.toString(start)));
+		params.add(new BasicNameValuePair("end", Integer.toString(end)));
+		params.add(new BasicNameValuePair("-orderByComparator", null));
+
+		String result = getHttpResponse("/knowledge-base-portlet.kbarticle/get-group-kb-articles", params);
+
+		if (result != null) {
+			// A Simple JSON Response Read
+			Set<IArticle<Long>> articles = decodeListFromJson(result, KbArticle.class);
+			return articles;
+		}
+		return new HashSet<>();
 	}
 
 	@Override
