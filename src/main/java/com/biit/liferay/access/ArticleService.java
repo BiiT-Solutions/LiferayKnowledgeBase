@@ -35,7 +35,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	private ClassNameService classNameService;
 
 	public ArticleService() {
-		serverConnection();
+		reset();
 	}
 
 	@Override
