@@ -380,6 +380,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	@Override
 	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+		checkConnection();
 		KbArticle article = new KbArticle();
 		IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 		if (className != null) {
