@@ -187,4 +187,9 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 		return null;
 	}
 
+	@Override
+	public void reset() {
+		RepositoryPool.getInstance().reset();
+	}
+
 }

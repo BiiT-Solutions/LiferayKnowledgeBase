@@ -4,7 +4,7 @@
 	<groupId>com.biit.liferay</groupId>
 	<artifactId>liferay-knowledge-base</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.59-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<name>Access to Liferay Knowledge Base</name>
 	<description>Services to retrieve articles from Liferay knowledge base.</description>
 
@@ -36,7 +36,7 @@
 		<maven-release-plugin.version>2.5.1</maven-release-plugin.version>
 		<maven-scm-provider-gitexe.version>1.9.2</maven-scm-provider-gitexe.version>
 		<org.testng.version>6.8</org.testng.version>
-		<biit-liferay-common-utils.version>[0.7,0.8)</biit-liferay-common-utils.version>
+		<biit-liferay-common-utils.version>[0.8,0.9)</biit-liferay-common-utils.version>
 		<surefire.version>2.16</surefire.version>
 		<project.scm.id>git</project.scm.id>
 	</properties>

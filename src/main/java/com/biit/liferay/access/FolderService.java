@@ -103,4 +103,9 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 		}
 		return false;
 	}
+
+	@Override
+	public void reset() {
+		FolderPool.getInstance().reset();
+	}
 }

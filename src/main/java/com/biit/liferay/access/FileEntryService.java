@@ -166,4 +166,9 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 		public byte[] value;
 	}
 
+	@Override
+	public void reset() {
+		FileEntryPool.getInstance().reset();
+	}
+
 }
