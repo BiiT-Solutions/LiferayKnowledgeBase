@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Named;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.ContentType;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Named
 public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileEntryService {
 	private final static String DUPLICATED_FILE = "DuplicateFileException";
 

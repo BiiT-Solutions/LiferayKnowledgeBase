@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Named;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Named
 public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> implements IArticleService {
 	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
 	private final static long ARTICLE_PARENT_RESOURCE_CLASSNAME = 41603l;

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Named;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Named
 public class RepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IRepositoryService {
 	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
 	private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
