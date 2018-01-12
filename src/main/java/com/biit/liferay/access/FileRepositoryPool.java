@@ -4,11 +4,11 @@ import com.biit.liferay.access.config.KnowledgeBaseConfigurationReader;
 import com.biit.liferay.model.IRepository;
 import com.biit.utils.pool.SimplePool;
 
-public class RepositoryPool extends SimplePool<Long, IRepository<Long>> {
+public class FileRepositoryPool extends SimplePool<Long, IRepository<Long>> {
 
-	private static RepositoryPool instance = new RepositoryPool();
+	private static FileRepositoryPool instance = new FileRepositoryPool();
 
-	public static RepositoryPool getInstance() {
+	public static FileRepositoryPool getInstance() {
 		return instance;
 	}
 

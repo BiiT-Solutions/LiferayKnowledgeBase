@@ -13,7 +13,7 @@ import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-public interface IRepositoryService {
+public interface IFileRepositoryService {
 
 	IRepository<Long> addRespository(IGroup<Long> site, String name, String description) throws NotConnectedToWebServiceException, ClientProtocolException,
 			IOException, AuthenticationRequired, WebServiceAccessError;

@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Named
-public class RepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IRepositoryService {
+public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IFileRepositoryService {
 	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
 	private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
 
@@ -116,7 +116,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 		if (result != null) {
 			// A Simple JSON Response Read
 			IRepository<Long> repository = decodeFromJson(result, Repository.class);
-			RepositoryPool.getInstance().addElement(repository);
+			FileRepositoryPool.getInstance().addElement(repository);
 			return repository;
 		}
 		return null;
@@ -153,7 +153,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 			String result = getHttpResponse("repository/delete-repository", params);
 
 			if (result == null || result.length() < 3) {
-				RepositoryPool.getInstance().removeElement(repository.getId());
+				FileRepositoryPool.getInstance().removeElement(repository.getId());
 				LiferayClientLogger.info(this.getClass().getName(), "Repository '" + repository.getUniqueName() + "' deleted.");
 				return true;
 			} else {
@@ -168,7 +168,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 	@Override
 	public IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
 			WebServiceAccessError, AuthenticationRequired {
-		IRepository<Long> repository = RepositoryPool.getInstance().getElement(repositoryId);
+		IRepository<Long> repository = FileRepositoryPool.getInstance().getElement(repositoryId);
 		if (repository != null) {
 			return repository;
 		}
@@ -184,7 +184,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 		if (result != null) {
 			// A Simple JSON Response Read
 			repository = decodeFromJson(result, Repository.class);
-			RepositoryPool.getInstance().addElement(repository);
+			FileRepositoryPool.getInstance().addElement(repository);
 			return repository;
 		}
 		return null;
@@ -192,7 +192,7 @@ public class RepositoryService extends ServiceAccess<IRepository<Long>, Reposito
 
 	@Override
 	public void reset() {
-		RepositoryPool.getInstance().reset();
+		FileRepositoryPool.getInstance().reset();
 	}
 
 }

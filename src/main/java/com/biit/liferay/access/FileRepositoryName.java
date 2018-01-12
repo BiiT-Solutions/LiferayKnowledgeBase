@@ -1,11 +1,11 @@
 package com.biit.liferay.access;
 
-public enum RepositoryName {
+public enum FileRepositoryName {
 	SITE("20");
 
 	private String name;
 
-	private RepositoryName(String name) {
+	private FileRepositoryName(String name) {
 		this.name = name;
 	}
 
