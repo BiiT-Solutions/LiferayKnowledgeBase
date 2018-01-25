@@ -23,6 +23,7 @@ import com.biit.usermanager.entity.IElement;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -127,18 +128,23 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 	public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		// Get user for folders
-		IUser<Long> user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
-		// Create basic site DLFolder.
-		IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
-		Assert.assertNotNull(parentFolder);
-		IFolder<Long> repositoryFolder = folderService.addFolder(site.getId(), repository.getId(), false, parentFolder.getId(), Long.toString(user.getId()),
-				DEFAULT_DLFOLDER_DESCRIPTION, site);
-		Assert.assertNotNull(repositoryFolder);
+		IUser<Long> user;
+		try {
+			user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
+			// Create basic site DLFolder.
+			IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
+			Assert.assertNotNull(parentFolder);
+			IFolder<Long> repositoryFolder = folderService.addFolder(site.getId(), repository.getId(), false, parentFolder.getId(),
+					Long.toString(user.getId()), DEFAULT_DLFOLDER_DESCRIPTION, site);
+			Assert.assertNotNull(repositoryFolder);
 
-		// Create adminPortlet Folder.
-		IFolder<Long> portletFolder = folderService.addFolder(site.getId(), repository.getId(), false, repositoryFolder.getId(),
-				PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION, site);
-		Assert.assertNotNull(portletFolder);
+			// Create adminPortlet Folder.
+			IFolder<Long> portletFolder = folderService.addFolder(site.getId(), repository.getId(), false, repositoryFolder.getId(),
+					PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION, site);
+			Assert.assertNotNull(portletFolder);
+		} catch (UserDoesNotExistException e) {
+			LiferayClientLogger.debug(this.getClass().getName(), "Cannot conect with user '" + userService.getConnectionUser() + "'.");
+		}
 	}
 
 	@Override
