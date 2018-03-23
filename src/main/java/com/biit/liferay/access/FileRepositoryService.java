@@ -104,8 +104,8 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 		if (className == null) {
 			throw new WebServiceAccessError("Class name '" + RESPOSITORY_CLASSNAME + "' not found!");
 		}
-		params.add(new BasicNameValuePair("groupId", Long.toString(site.getId())));
-		params.add(new BasicNameValuePair("classNameId", Long.toString(className.getId())));
+		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
+		params.add(new BasicNameValuePair("classNameId", Long.toString(className.getUniqueId())));
 		params.add(new BasicNameValuePair("parentFolderId", "1"));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
@@ -134,12 +134,12 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 			// Create basic site DLFolder.
 			IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
 			Assert.assertNotNull(parentFolder);
-			IFolder<Long> repositoryFolder = folderService.addFolder(site.getId(), repository.getId(), false, parentFolder.getId(),
-					Long.toString(user.getId()), DEFAULT_DLFOLDER_DESCRIPTION, site);
+			IFolder<Long> repositoryFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false, parentFolder.getUniqueId(),
+					Long.toString(user.getUniqueId()), DEFAULT_DLFOLDER_DESCRIPTION, site);
 			Assert.assertNotNull(repositoryFolder);
 
 			// Create adminPortlet Folder.
-			IFolder<Long> portletFolder = folderService.addFolder(site.getId(), repository.getId(), false, repositoryFolder.getId(),
+			IFolder<Long> portletFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false, repositoryFolder.getUniqueId(),
 					PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION, site);
 			Assert.assertNotNull(portletFolder);
 		} catch (UserDoesNotExistException e) {
@@ -154,16 +154,16 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 			checkConnection();
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("repositoryId", repository.getId() + ""));
+			params.add(new BasicNameValuePair("repositoryId", repository.getUniqueId() + ""));
 
 			String result = getHttpResponse("repository/delete-repository", params);
 
 			if (result == null || result.length() < 3) {
-				FileRepositoryPool.getInstance().removeElement(repository.getId());
+				FileRepositoryPool.getInstance().removeElement(repository.getUniqueId());
 				LiferayClientLogger.info(this.getClass().getName(), "Repository '" + repository.getUniqueName() + "' deleted.");
 				return true;
 			} else {
-				throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:" + repository.getId()
+				throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:" + repository.getUniqueId()
 						+ ") not deleted correctly. ");
 			}
 

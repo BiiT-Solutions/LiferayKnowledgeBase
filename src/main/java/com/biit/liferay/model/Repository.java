@@ -37,7 +37,7 @@ public class Repository implements IRepository<Long> {
 	}
 
 	@Override
-	public Long getId() {
+	public Long getUniqueId() {
 		return getRepositoryId();
 	}
 

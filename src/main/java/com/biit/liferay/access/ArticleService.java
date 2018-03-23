@@ -202,7 +202,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			// get className id from another webservice.
 			IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 			if (className != null) {
-				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getId())));
+				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getUniqueId())));
 			} else {
 				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
 			}
@@ -214,7 +214,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("sourceURL", sourceURL));
 		params.add(new BasicNameValuePair("sections", convertToJson(sections)));
 		params.add(new BasicNameValuePair("selectedFileNames", convertToJson(selectedFileNames)));
-		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getUniqueId())));
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/add-kb-article", params);
 
@@ -246,7 +246,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			// get className id from another webservice.
 			IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 			if (className != null) {
-				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getId())));
+				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getUniqueId())));
 			} else {
 				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
 			}
@@ -258,7 +258,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("sourceURL", sourceURL));
 		params.add(new BasicNameValuePair("sections", convertToJson(sections)));
 		params.add(new BasicNameValuePair("selectedFileNames", convertToJson(selectedFileNames)));
-		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getUniqueId())));
 
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/add-kb-article", params);
 
@@ -275,7 +275,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	public Integer getArticlesCount(IGroup<Long> site) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
 		checkConnection();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("groupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
 		params.add(new BasicNameValuePair("status", "0"));
 
 		String result = getHttpResponse("/knowledge-base-portlet.kbarticle/get-group-kb-articles-count", params);
@@ -301,7 +301,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			IOException, AuthenticationRequired {
 		checkConnection();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("groupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
 		params.add(new BasicNameValuePair("status", "0"));
 		params.add(new BasicNameValuePair("start", Integer.toString(start)));
 		params.add(new BasicNameValuePair("end", Integer.toString(end)));
@@ -334,7 +334,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 				LiferayClientLogger.info(this.getClass().getName(), "Article '" + articleDeleted.getTitle() + "' deleted.");
 				return articleDeleted;
 			} else {
-				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getId() + ") not deleted correctly. ");
+				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getUniqueId() + ") not deleted correctly. ");
 			}
 		}
 		return null;
@@ -387,7 +387,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		KbArticle article = new KbArticle();
 		IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
 		if (className != null) {
-			article.setParentResourceClassNameId(className.getId());
+			article.setParentResourceClassNameId(className.getUniqueId());
 			article.setParentResourcePrimKey(0l);
 		}
 		article.setTitle(title);

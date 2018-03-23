@@ -213,7 +213,7 @@ public class DLFolder implements IFolder<Long> {
 	}
 
 	@Override
-	public Long getId() {
+	public Long getUniqueId() {
 		return folderId;
 	}
 }

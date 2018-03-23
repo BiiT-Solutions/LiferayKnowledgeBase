@@ -105,15 +105,15 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 			checkConnection();
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("fileEntryId", fileEntry.getId() + ""));
+			params.add(new BasicNameValuePair("fileEntryId", fileEntry.getUniqueId() + ""));
 
 			String result = getHttpResponse("dlapp/delete-file-entry", params);
 
 			if (result == null || result.length() < 3) {
-				FileEntryPool.getInstance().removeElement(fileEntry.getId());
+				FileEntryPool.getInstance().removeElement(fileEntry.getUniqueId());
 				LiferayClientLogger.info(this.getClass().getName(), "Document '" + fileEntry.getUniqueName() + "' deleted.");
 			} else {
-				throw new DocumentNotDeletedException("Document '" + fileEntry.getUniqueName() + "' (id:" + fileEntry.getId() + ") not deleted correctly. ");
+				throw new DocumentNotDeletedException("Document '" + fileEntry.getUniqueName() + "' (id:" + fileEntry.getUniqueId() + ") not deleted correctly. ");
 			}
 		}
 	}

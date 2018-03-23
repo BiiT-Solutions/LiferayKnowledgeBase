@@ -267,7 +267,7 @@ public class KbArticle implements IArticle<Long> {
 	}
 
 	@Override
-	public Long getId() {
+	public Long getUniqueId() {
 		return getKbArticleId();
 	}
 

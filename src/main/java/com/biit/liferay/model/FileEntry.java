@@ -61,7 +61,7 @@ public class FileEntry implements IFileEntry<Long> {
 	private String version;
 
 	@Override
-	public Long getId() {
+	public Long getUniqueId() {
 		return fileEntryId;
 	}
 
@@ -300,7 +300,7 @@ public class FileEntry implements IFileEntry<Long> {
 
 	@Override
 	public String getUniqueName() {
-		return getTitle() + " (" + getId() + ")";
+		return getTitle() + " (" + getUniqueId() + ")";
 	}
 
 }

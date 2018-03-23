@@ -46,7 +46,7 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 		params.add(new BasicNameValuePair("parentFolderId", Long.toString(parentFolderId)));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getId())));
+		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getUniqueId())));
 
 		String result = getHttpResponse("dlfolder/add-folder", params);
 
@@ -92,16 +92,16 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 			checkConnection();
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("folderId", folder.getId() + ""));
+			params.add(new BasicNameValuePair("folderId", folder.getUniqueId() + ""));
 
 			String result = getHttpResponse("dlfolder/delete-folder", params);
 
 			if (result == null || result.length() < 3) {
 				LiferayClientLogger.info(this.getClass().getName(), "Folder '" + folder.getUniqueName() + "' deleted.");
-				FolderPool.getInstance().removeElement(folder.getId());
+				FolderPool.getInstance().removeElement(folder.getUniqueId());
 				return true;
 			} else {
-				throw new FolderNotDeletedException("Folder '" + folder.getUniqueName() + "' (id:" + folder.getId() + ") not deleted correctly. ");
+				throw new FolderNotDeletedException("Folder '" + folder.getUniqueName() + "' (id:" + folder.getUniqueId() + ") not deleted correctly. ");
 			}
 		}
 		return false;
