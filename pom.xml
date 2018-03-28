@@ -4,7 +4,7 @@
 	<groupId>com.biit.liferay</groupId>
 	<artifactId>liferay-knowledge-base</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.19-SNAPSHOT</version>
+	<version>0.2.19</version>
 	<name>Access to Liferay Knowledge Base</name>
 	<description>Services to retrieve articles from Liferay knowledge base.</description>
 
@@ -24,7 +24,7 @@
 	<scm>
 		<connection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</connection>
 		<developerConnection>scm:git:git.biit-solutions.com:LiferayKnowledgeBase.git</developerConnection>
-		<tag>liferay-knowledge-base</tag>
+		<tag>liferay-knowledge-base-0.2.19</tag>
 	</scm>
 
 	<properties>
