@@ -278,7 +278,7 @@ public class KbArticle implements IArticle<Long> {
 
 	@Override
 	public String toString() {
-		return urlTitle;
+		return title;
 	}
 
 	public Long getKbFolderId() {
