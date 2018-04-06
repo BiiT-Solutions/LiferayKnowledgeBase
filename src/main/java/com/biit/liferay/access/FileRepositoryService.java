@@ -106,7 +106,7 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 		}
 		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
 		params.add(new BasicNameValuePair("classNameId", Long.toString(className.getUniqueId())));
-		params.add(new BasicNameValuePair("parentFolderId", "1"));
+		params.add(new BasicNameValuePair("parentFolderId", "0"));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
 		params.add(new BasicNameValuePair("portletId", PortletId.DOCUMENT_AND_MEDIA.getId()));
