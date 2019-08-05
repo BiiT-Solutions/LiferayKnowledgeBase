@@ -8,13 +8,15 @@
 				<include name="siteAccess" />
 				<include name="companyAccess" />
 				<include name="articleAccess" />
+				<include name="articleFolderAccess" />
 				<include name="repository" />
 				<include name="fileEntry" />
 				<include name="deleteData" />
 			</run>
 		</groups>
 		<classes>
-			<class name="com.biit.liferay.test.ArticleTest" /> 
+			<class name="com.biit.liferay.test.ArticleTest" />
+			<class name="com.biit.liferay.test.FolderTest" />  
 			<class name="com.biit.liferay.test.FileEntryTest" />
 		</classes>
 	</test>
