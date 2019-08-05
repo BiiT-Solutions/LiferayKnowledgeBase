@@ -18,6 +18,7 @@ import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
 import com.biit.liferay.model.IArticle;
 import com.biit.liferay.model.KbArticle;
+import com.biit.liferay.model.KbFolder;
 import com.biit.usermanager.entity.IElement;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> implements IArticleService {
 	private final static long ARTICLE_PARENT_RESOURCE_PRIMKEY = 0l;
 	private final static long ARTICLE_PARENT_RESOURCE_CLASSNAME = 41603l;
-	private final static String ARTICLE_PARENT_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
+
 	private final static String DIR_NAME = "";
 
 	private SiteService siteService;
@@ -55,10 +56,11 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken, String loginUser,
-			String password) {
+	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath,
+			String authenticationToken, String loginUser, String password) {
 		// Standard behavior.
-		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
+				password);
 		// Disconnect previous connections.
 		try {
 			siteService.disconnect();
@@ -69,17 +71,21 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		}
 		// Sites are needed for some services.
 		siteService = new SiteService();
-		siteService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		siteService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
+				password);
 		// Sites are needed for some services.
 		companyService = new CompanyService();
-		companyService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		companyService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
+				loginUser, password);
 		// classNames are needed to add an article.
 		classNameService = new ClassNameService();
-		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
+				loginUser, password);
 	}
 
 	@Override
-	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass) throws JsonParseException, JsonMappingException, IOException {
+	public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass)
+			throws JsonParseException, JsonMappingException, IOException {
 		Set<IArticle<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbArticle>>() {
 		});
 		return myObjects;
@@ -97,8 +103,8 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		return getLatestArticle(resourcePrimKey, 0);
 	}
 
@@ -106,8 +112,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	 * Gets an article by its resource key and the status.
 	 * 
 	 * @param resourceKey
-	 * @param status
-	 *            0 if published.
+	 * @param status      0 if published.
 	 * @return
 	 * @throws NotConnectedToWebServiceException
 	 * @throws ClientProtocolException
@@ -116,8 +121,8 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	 * @throws WebServiceAccessError
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 
 		IArticle<Long> article = ArticlePool.getInstance().getElement(resourcePrimKey);
 		if (article != null) {
@@ -143,26 +148,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
-		Long parentResourcePrimKey = 0l;
-		Long parentResourceClassId = 0l;
-		String urlTitle = "";
-		String sourceURL = "";
-		List<String> selectedFileNames = null;
-		if (article instanceof KbArticle) {
-			parentResourcePrimKey = ((KbArticle) article).getParentResourcePrimKey();
-			parentResourceClassId = ((KbArticle) article).getParentResourceClassNameId();
-			urlTitle = ((KbArticle) article).getUrlTitle();
-			sourceURL = ((KbArticle) article).getSourceURL();
-			selectedFileNames = ((KbArticle) article).getSelectedFileNames();
-		}
-		return addArticle(parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle, article.getContent(), article.getDescription(),
-				sourceURL, article.getSections(), selectedFileNames, site);
-	}
-
-	@Override
-	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost) throws ClientProtocolException,
+	public IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		Long parentResourcePrimKey = 0l;
 		Long parentResourceClassId = 0l;
@@ -176,14 +162,38 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			sourceURL = ((KbArticle) article).getSourceURL();
 			selectedFileNames = ((KbArticle) article).getSelectedFileNames();
 		}
-		return addArticle(parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle, article.getContent(), article.getDescription(),
-				sourceURL, article.getSections(), selectedFileNames, siteName, virtualHost);
+		return addArticle(parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle,
+				article.getContent(), article.getDescription(), sourceURL, article.getSections(), selectedFileNames,
+				site);
 	}
 
 	@Override
-	public IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle, String content,
-			String description, String sourceURL, List<String> sections, List<String> selectedFileNames, String siteName, String virtualHost)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> addArticle(IArticle<Long> article, String siteName, String virtualHost)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
+			WebServiceAccessError {
+		Long parentResourcePrimKey = 0l;
+		Long parentResourceClassId = 0l;
+		String urlTitle = "";
+		String sourceURL = "";
+		List<String> selectedFileNames = null;
+		if (article instanceof KbArticle) {
+			parentResourcePrimKey = ((KbArticle) article).getParentResourcePrimKey();
+			parentResourceClassId = ((KbArticle) article).getParentResourceClassNameId();
+			urlTitle = ((KbArticle) article).getUrlTitle();
+			sourceURL = ((KbArticle) article).getSourceURL();
+			selectedFileNames = ((KbArticle) article).getSelectedFileNames();
+		}
+		return addArticle(parentResourcePrimKey, parentResourceClassId, article.getTitle(), urlTitle,
+				article.getContent(), article.getDescription(), sourceURL, article.getSections(), selectedFileNames,
+				siteName, virtualHost);
+	}
+
+	@Override
+	public IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title,
+			String urlTitle, String content, String description, String sourceURL, List<String> sections,
+			List<String> selectedFileNames, String siteName, String virtualHost)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError {
 		checkConnection();
 
 		IGroup<Long> company = companyService.getCompanyByVirtualHost(virtualHost);
@@ -200,11 +210,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(parentResourceClassNameId)));
 		} else {
 			// get className id from another webservice.
-			IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
+			IElement<Long> className = classNameService.getClassName(KbFolder.FOLDER_LIFERAY_CLASSNAME);
 			if (className != null) {
 				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getUniqueId())));
 			} else {
-				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
+				params.add(new BasicNameValuePair("parentResourceClassNameId",
+						Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
 			}
 		}
 		params.add(new BasicNameValuePair("title", title));
@@ -228,9 +239,10 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title, String urlTitle, String content,
-			String description, String sourceURL, List<String> sections, List<String> selectedFileNames, IGroup<Long> site)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> addArticle(Long parentResourcePrimKey, Long parentResourceClassNameId, String title,
+			String urlTitle, String content, String description, String sourceURL, List<String> sections,
+			List<String> selectedFileNames, IGroup<Long> site) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -244,11 +256,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(parentResourceClassNameId)));
 		} else {
 			// get className id from another webservice.
-			IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
+			IElement<Long> className = classNameService.getClassName(KbFolder.FOLDER_LIFERAY_CLASSNAME);
 			if (className != null) {
 				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getUniqueId())));
 			} else {
-				params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
+				params.add(new BasicNameValuePair("parentResourceClassNameId",
+						Long.toString(ARTICLE_PARENT_RESOURCE_CLASSNAME)));
 			}
 		}
 		params.add(new BasicNameValuePair("title", title));
@@ -272,7 +285,8 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public Integer getArticlesCount(IGroup<Long> site) throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
+	public Integer getArticlesCount(IGroup<Long> site)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
 		checkConnection();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
@@ -291,14 +305,14 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public Set<IArticle<Long>> getArticles(IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
-			AuthenticationRequired {
+	public Set<IArticle<Long>> getArticles(IGroup<Long> site)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired {
 		return getArticles(site, 0, 1000);
 	}
 
 	@Override
-	public Set<IArticle<Long>> getArticles(IGroup<Long> site, int start, int end) throws NotConnectedToWebServiceException, ClientProtocolException,
-			IOException, AuthenticationRequired {
+	public Set<IArticle<Long>> getArticles(IGroup<Long> site, int start, int end)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
 		checkConnection();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
@@ -318,8 +332,9 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public IArticle<Long> deleteArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, ArticleNotDeletedException, WebServiceAccessError {
+	public IArticle<Long> deleteArticle(IArticle<Long> article)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			ArticleNotDeletedException, WebServiceAccessError {
 		if (article != null) {
 			checkConnection();
 
@@ -331,18 +346,20 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 				// A Simple JSON Response Read
 				IArticle<Long> articleDeleted = decodeFromJson(result, KbArticle.class);
 				ArticlePool.getInstance().addElement(articleDeleted);
-				LiferayClientLogger.info(this.getClass().getName(), "Article '" + articleDeleted.getTitle() + "' deleted.");
+				LiferayClientLogger.info(this.getClass().getName(),
+						"Article '" + articleDeleted.getTitle() + "' deleted.");
 				return articleDeleted;
 			} else {
-				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getUniqueId() + ") not deleted correctly. ");
+				throw new ArticleNotDeletedException("Article '" + article.getTitle() + "' (id:" + article.getUniqueId()
+						+ ") not deleted correctly. ");
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public IArticle<Long> editArticle(IArticle<Long> article) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> editArticle(IArticle<Long> article) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		if (article != null) {
 			checkConnection();
 
@@ -381,11 +398,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections) throws ClientProtocolException,
-			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> createArticle(String title, String content, String description, List<String> sections)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
+			WebServiceAccessError {
 		checkConnection();
 		KbArticle article = new KbArticle();
-		IElement<Long> className = classNameService.getClassName(ARTICLE_PARENT_CLASSNAME);
+		IElement<Long> className = classNameService.getClassName(KbFolder.FOLDER_LIFERAY_CLASSNAME);
 		if (className != null) {
 			article.setParentResourceClassNameId(className.getUniqueId());
 			article.setParentResourcePrimKey(0l);

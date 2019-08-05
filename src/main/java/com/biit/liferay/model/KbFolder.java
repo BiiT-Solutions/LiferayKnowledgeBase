@@ -3,6 +3,8 @@ package com.biit.liferay.model;
 import java.util.Calendar;
 
 public class KbFolder implements IFolder<Long> {
+	public static final String FOLDER_LIFERAY_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
+
 	private Long companyId;
 	private Calendar createDate;
 	private String description;
