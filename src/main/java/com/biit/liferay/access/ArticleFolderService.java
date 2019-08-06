@@ -148,6 +148,9 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 			} catch (WebServiceAccessError e) {
 				if (!e.getMessage().contains("No KBFolder exists")) {
 					LiferayClientLogger.warning(this.getClass().getName(), e.getMessage());
+				} else {
+					LiferayClientLogger.info(this.getClass().getName(),
+							"No folder exists with urlTitle '" + urlTitle + "'.");
 				}
 			}
 		}
