@@ -27,4 +27,8 @@ public interface IArticleFolderService {
 
 	Integer getFoldersCount(Long groupId, Long parentKBFolderId, IGroup<Long> site)
 			throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired;
+
+	IFolder<Long> getFolder(String urlFolder, Long groupId, Long parentKBFolderId)
+			throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
+			WebServiceAccessError, AuthenticationRequired;
 }

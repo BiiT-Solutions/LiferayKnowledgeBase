@@ -110,6 +110,38 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 	}
 
 	@Override
+	public IFolder<Long> getFolder(String urlTitle, Long groupId, Long parentKBFolderId)
+			throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
+			WebServiceAccessError, AuthenticationRequired {
+		checkConnection();
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("urlTitle", urlTitle));
+		if (groupId != null) {
+			params.add(new BasicNameValuePair("groupId", Long.toString(groupId)));
+		} else {
+			params.add(new BasicNameValuePair("groupId", Long.toString(FOLDER_DEFAULT_GROUP)));
+		}
+		if (parentKBFolderId != null) {
+			params.add(new BasicNameValuePair("parentKBFolderId", Long.toString(parentKBFolderId)));
+		} else {
+			params.add(new BasicNameValuePair("parentKBFolderId", Long.toString(FOLDER_PARENT_RESOURCE_PRIMKEY)));
+		}
+
+		String result = getHttpResponse("knowledge-base-portlet.kbfolder/get-kb-folder-by-url-title", params);
+
+		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
+
+		if (result != null) {
+			// A Simple JSON Response Read
+			IFolder<Long> folder = decodeFromJson(result, KbFolder.class);
+			FolderPool.getInstance().addElement(folder);
+			return folder;
+		}
+		return null;
+	}
+
+	@Override
 	public IFolder<Long> getFolder(long folderId) throws JsonParseException, JsonMappingException, IOException,
 			NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired {
 		IFolder<Long> folder = FolderPool.getInstance().getElement(folderId);
