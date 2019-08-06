@@ -230,4 +230,10 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 	public void reset() {
 		FolderPool.getInstance().reset();
 	}
+
+	@Override
+	public IElement<Long> getFolderClassName() throws ClientProtocolException, NotConnectedToWebServiceException,
+			IOException, AuthenticationRequired, WebServiceAccessError {
+		return classNameService.getClassName(KbFolder.FOLDER_LIFERAY_CLASSNAME);
+	}
 }

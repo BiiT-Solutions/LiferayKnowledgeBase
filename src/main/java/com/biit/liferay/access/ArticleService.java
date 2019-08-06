@@ -416,4 +416,5 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		return article;
 	}
 
+
 }

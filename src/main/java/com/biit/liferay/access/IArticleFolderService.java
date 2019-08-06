@@ -8,6 +8,7 @@ import com.biit.liferay.access.exceptions.FolderNotDeletedException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.model.IFolder;
+import com.biit.usermanager.entity.IElement;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -31,4 +32,7 @@ public interface IArticleFolderService {
 	IFolder<Long> getFolder(String urlFolder, Long groupId, Long parentKBFolderId)
 			throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
 			WebServiceAccessError, AuthenticationRequired;
+
+	IElement<Long> getFolderClassName() throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
+			AuthenticationRequired, WebServiceAccessError;
 }
