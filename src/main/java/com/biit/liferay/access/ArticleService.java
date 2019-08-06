@@ -444,12 +444,13 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(folderId)));
 		params.add(new BasicNameValuePair("priority", "1.0"));
 
-		LiferayClientLogger.debug(this.getClass().getName(), "Moving article with params " + params);
+		LiferayClientLogger.debug(this.getClass().getName(),
+				"Moving article '" + resourcePrimKey + "' with params " + params);
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/move-kb-article", params);
 
 		// A Simple JSON Response Read
-		LiferayClientLogger.info(this.getClass().getName(),
-				"Moving article '" + resourcePrimKey + "' to folder  '" + folderId + "' has as result '" + result + "'.");
+		LiferayClientLogger.info(this.getClass().getName(), "Moving article '" + resourcePrimKey + "' to folder  '"
+				+ folderId + "' has as result '" + result + "'.");
 	}
 
 }
