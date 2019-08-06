@@ -146,7 +146,7 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 				FolderPool.getInstance().addElement(folder);
 				return folder;
 			} catch (WebServiceAccessError e) {
-				LiferayClientLogger.errorMessage(this.getClass().getName(), e);
+				LiferayClientLogger.warning(this.getClass().getName(), e.getMessage());
 			}
 		}
 		return null;
