@@ -444,6 +444,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(folderId)));
 		params.add(new BasicNameValuePair("priority", "1.0"));
 
+		LiferayClientLogger.info(this.getClass().getName(), params.toString());
 		String result = getHttpResponse("knowledge-base-portlet.kbarticle/move-kb-article", params);
 
 		if (result != null) {
