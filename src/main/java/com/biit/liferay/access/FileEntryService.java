@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Named
 public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileEntryService {
 	private final static String DUPLICATED_FILE = "DuplicateFileException";
+	private final static String NOT_FOUND = "404 Not Found";
 
 	@Override
 	public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1)
@@ -75,7 +76,7 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
 				}
 				throw wsae;
 			} catch (JsonParseException e) {
-				if (e.getMessage().contains("404 Not Found")) {
+				if (e.getMessage().contains(NOT_FOUND)) {
 					throw new FileNotFoundException("File '" + sourceFileName + "' not found.");
 				}
 				throw e;
