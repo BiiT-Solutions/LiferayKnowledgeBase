@@ -109,9 +109,17 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 
 		if (result != null) {
 			// A Simple JSON Response Read
-			IFolder<Long> folder = decodeFromJson(result, KbFolder.class);
-			FolderPool.getInstance().addElement(folder);
-			return folder;
+			try {
+				IFolder<Long> folder = decodeFromJson(result, KbFolder.class);
+				FolderPool.getInstance().addElement(folder);
+				return folder;
+			} catch (WebServiceAccessError e) {
+				if (e.getMessage().contains("already exists")) {
+					LiferayClientLogger.info(this.getClass().getName(), "Folder  '" + name + "' already exists.");
+				} else {
+					throw e;
+				}
+			}
 		}
 		return null;
 	}
