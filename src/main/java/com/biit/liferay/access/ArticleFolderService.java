@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder> implements IArticleFolderService {
 	private final static long FOLDER_PARENT_RESOURCE_PRIMKEY = 0l;
 	private final static long FOLDER_DEFAULT_GROUP = 0l;
-	private final static String FOLDER_PARENT_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
+	public final static String FOLDER_PARENT_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
 
 	private ClassNameService classNameService;
 

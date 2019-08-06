@@ -425,4 +425,32 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		return article;
 	}
 
+	@Override
+	public void moveArticle(long articleId, Long folderId) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+		checkConnection();
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(articleId)));
+
+		// get className id from another webservice.
+		IElement<Long> className = classNameService.getClassName(ArticleFolderService.FOLDER_PARENT_CLASSNAME);
+		if (className != null) {
+			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(className.getUniqueId())));
+		} else {
+			params.add(new BasicNameValuePair("parentResourceClassNameId", Long.toString(0)));
+		}
+
+		params.add(new BasicNameValuePair("parentResourcePrimKey", Long.toString(folderId)));
+		params.add(new BasicNameValuePair("priority", "1.0"));
+
+		String result = getHttpResponse("knowledge-base-portlet.kbarticle/move-kb-article", params);
+
+		if (result != null) {
+			// A Simple JSON Response Read
+			LiferayClientLogger.info(this.getClass().getName(),
+					"Moving article '' to folder  '" + articleId + "' has as result '" + folderId + "'.");
+		}
+	}
+
 }
