@@ -426,12 +426,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	}
 
 	@Override
-	public void moveArticle(long articleId, Long folderId) throws NotConnectedToWebServiceException,
+	public void moveArticle(long resourcePrimKey, Long folderId) throws NotConnectedToWebServiceException,
 			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(articleId)));
+		params.add(new BasicNameValuePair("resourcePrimKey", Long.toString(resourcePrimKey)));
 
 		// get className id from another webservice.
 		IElement<Long> className = classNameService.getClassName(ArticleFolderService.FOLDER_PARENT_CLASSNAME);
@@ -449,7 +449,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 
 		// A Simple JSON Response Read
 		LiferayClientLogger.warning(this.getClass().getName(),
-				"Moving article '" + articleId + "' to folder  '" + folderId + "' has as result '" + result + "'.");
+				"Moving article '" + resourcePrimKey + "' to folder  '" + folderId + "' has as result '" + result + "'.");
 	}
 
 }
