@@ -65,7 +65,15 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		// Disconnect previous connections.
 		try {
 			siteService.disconnect();
+		} catch (Exception e) {
+
+		}
+		try {
 			companyService.disconnect();
+		} catch (Exception e) {
+
+		}
+		try {
 			classNameService.disconnect();
 		} catch (Exception e) {
 
@@ -416,6 +424,5 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 
 		return article;
 	}
-
 
 }

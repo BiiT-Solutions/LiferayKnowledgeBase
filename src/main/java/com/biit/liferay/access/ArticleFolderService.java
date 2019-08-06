@@ -32,7 +32,7 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
 	private final static String FOLDER_PARENT_CLASSNAME = "com.liferay.knowledgebase.model.KBFolder";
 
 	private ClassNameService classNameService;
-	
+
 	public ArticleFolderService() {
 		super();
 		reset();
