@@ -10,9 +10,9 @@ import javax.inject.Named;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-import org.junit.Assert;
 
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
+import com.biit.liferay.access.exceptions.RepositoryNotCreatedException;
 import com.biit.liferay.access.exceptions.RepositoryNotDeletedException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
@@ -30,7 +30,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Named
-public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repository> implements IFileRepositoryService {
+public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repository>
+		implements IFileRepositoryService {
 	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
 	private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
 
@@ -53,10 +54,11 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 	}
 
 	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath, String authenticationToken, String loginUser,
-			String password) {
+	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath,
+			String authenticationToken, String loginUser, String password) {
 		// Standard behavior.
-		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
+				password);
 		// Disconnect previous connections.
 		try {
 			classNameService.disconnect();
@@ -65,7 +67,8 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 		}
 		// classNames are needed to add an article.
 		classNameService = new ClassNameService();
-		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
+				loginUser, password);
 
 		// Repository needs some basic folders.
 		try {
@@ -74,7 +77,8 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 
 		}
 		folderService = new FolderService();
-		folderService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		folderService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
+				loginUser, password);
 		// Repository needs some basic folders.
 		try {
 			userService.disconnect();
@@ -82,19 +86,22 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 
 		}
 		userService = new UserService();
-		userService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser, password);
+		userService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
+				password);
 	}
 
 	@Override
-	public Set<IRepository<Long>> decodeListFromJson(String json, Class<Repository> objectClass) throws JsonParseException, JsonMappingException, IOException {
+	public Set<IRepository<Long>> decodeListFromJson(String json, Class<Repository> objectClass)
+			throws JsonParseException, JsonMappingException, IOException {
 		Set<IRepository<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<Repository>>() {
 		});
 		return myObjects;
 	}
 
 	@Override
-	public IRepository<Long> addRespository(IGroup<Long> site, String name, String description) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IRepository<Long> addRespository(IGroup<Long> site, String name, String description)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -125,31 +132,42 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 
 	@Override
 	@Deprecated
-	public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site) throws ClientProtocolException,
-			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site)
+			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
+			WebServiceAccessError, RepositoryNotCreatedException {
 		// Get user for folders
 		IUser<Long> user;
 		try {
 			user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
 			// Create basic site DLFolder.
 			IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
-			Assert.assertNotNull(parentFolder);
-			IFolder<Long> repositoryFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false, parentFolder.getUniqueId(),
-					Long.toString(user.getUniqueId()), DEFAULT_DLFOLDER_DESCRIPTION, site);
-			Assert.assertNotNull(repositoryFolder);
+
+			IFolder<Long> repositoryFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(),
+					false, parentFolder.getUniqueId(), Long.toString(user.getUniqueId()), DEFAULT_DLFOLDER_DESCRIPTION,
+					site);
+			if (repositoryFolder == null) {
+				throw new RepositoryNotCreatedException("Repository '" + repository.getUniqueName() + "' (id:"
+						+ repository.getUniqueId() + ") not created correctly. ");
+			}
 
 			// Create adminPortlet Folder.
-			IFolder<Long> portletFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false, repositoryFolder.getUniqueId(),
-					PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION, site);
-			Assert.assertNotNull(portletFolder);
+			IFolder<Long> portletFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false,
+					repositoryFolder.getUniqueId(), PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION,
+					site);
+			if (portletFolder == null) {
+				throw new RepositoryNotCreatedException(
+						"Folder for site '" + site.getUniqueName() + "' and repository '" + repository.getUniqueName()
+								+ "' (id:" + repository.getUniqueId() + ") not created correctly. ");
+			}
 		} catch (UserDoesNotExistException e) {
-			LiferayClientLogger.debug(this.getClass().getName(), "Cannot conect with user '" + userService.getConnectionUser() + "'.");
+			LiferayClientLogger.debug(this.getClass().getName(),
+					"Cannot conect with user '" + userService.getConnectionUser() + "'.");
 		}
 	}
 
 	@Override
-	public boolean deleteRepository(IRepository<Long> repository) throws NotConnectedToWebServiceException, ClientProtocolException, IOException,
-			AuthenticationRequired, RepositoryNotDeletedException {
+	public boolean deleteRepository(IRepository<Long> repository) throws NotConnectedToWebServiceException,
+			ClientProtocolException, IOException, AuthenticationRequired, RepositoryNotDeletedException {
 		if (repository != null) {
 			checkConnection();
 
@@ -160,11 +178,12 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 
 			if (result == null || result.length() < 3) {
 				FileRepositoryPool.getInstance().removeElement(repository.getUniqueId());
-				LiferayClientLogger.info(this.getClass().getName(), "Repository '" + repository.getUniqueName() + "' deleted.");
+				LiferayClientLogger.info(this.getClass().getName(),
+						"Repository '" + repository.getUniqueName() + "' deleted.");
 				return true;
 			} else {
-				throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:" + repository.getUniqueId()
-						+ ") not deleted correctly. ");
+				throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:"
+						+ repository.getUniqueId() + ") not deleted correctly. ");
 			}
 
 		}
@@ -172,8 +191,8 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
 	}
 
 	@Override
-	public IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
-			WebServiceAccessError, AuthenticationRequired {
+	public IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException,
+			IOException, NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired {
 		IRepository<Long> repository = FileRepositoryPool.getInstance().getElement(repositoryId);
 		if (repository != null) {
 			return repository;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
+import com.biit.liferay.access.exceptions.RepositoryNotCreatedException;
 import com.biit.liferay.access.exceptions.RepositoryNotDeletedException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.model.IRepository;
@@ -35,9 +36,10 @@ public interface IFileRepositoryService {
 	 * @throws IOException
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
+	 * @throws RepositoryNotCreatedException 
 	 */
 	@Deprecated
 	void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site) throws ClientProtocolException,
-			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
+			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError, RepositoryNotCreatedException;
 
 }
