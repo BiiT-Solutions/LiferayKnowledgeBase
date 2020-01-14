@@ -13,6 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.biit.liferay.access.exceptions.ArticleNotDeletedException;
+import com.biit.liferay.access.exceptions.ArticleNotFoundException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.log.LiferayClientLogger;
@@ -110,10 +111,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	 * @throws IOException
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
+	 * @throws ArticleNotFoundException
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError, ArticleNotFoundException {
 		return getLatestArticle(resourcePrimKey, 0);
 	}
 
@@ -128,10 +131,12 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 	 * @throws IOException
 	 * @throws AuthenticationRequired
 	 * @throws WebServiceAccessError
+	 * @throws ArticleNotFoundException
 	 */
 	@Override
-	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public IArticle<Long> getLatestArticle(long resourcePrimKey, int status)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError, ArticleNotFoundException {
 
 		IArticle<Long> article = ArticlePool.getInstance().getElement(resourcePrimKey);
 		if (article != null) {
@@ -148,6 +153,10 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
 		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
 
 		if (result != null) {
+			// Check some errors
+			if (result.contains("NoSuchArticleException")) {
+				throw new ArticleNotFoundException("Article with key '" + resourcePrimKey + "' not found on Liferay.");
+			}
 			// A Simple JSON Response Read
 			article = decodeFromJson(result, KbArticle.class);
 			ArticlePool.getInstance().addElement(article);

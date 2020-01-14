@@ -8,6 +8,7 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.biit.liferay.access.LiferayService;
 import com.biit.liferay.access.exceptions.ArticleNotDeletedException;
+import com.biit.liferay.access.exceptions.ArticleNotFoundException;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.model.IArticle;
@@ -16,11 +17,13 @@ import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 
 public interface IArticleService extends LiferayService {
 
-	IArticle<Long> getLatestArticle(long resourcePrimKey) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> getLatestArticle(long resourcePrimKey)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError, ArticleNotFoundException;
 
-	IArticle<Long> getLatestArticle(long resourcePrimKey, int status) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError;
+	IArticle<Long> getLatestArticle(long resourcePrimKey, int status)
+			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+			WebServiceAccessError, ArticleNotFoundException;
 
 	IArticle<Long> addArticle(IArticle<Long> article, IGroup<Long> site) throws ClientProtocolException,
 			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError;
