@@ -28,27 +28,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implements IFolderService {
 
 	@Override
-	public Set<IFolder<Long>> decodeListFromJson(String json, Class<DLFolder> objectClass) throws JsonParseException, JsonMappingException, IOException {
+	public Set<IFolder<Long>> decodeListFromJson(String json, Class<DLFolder> objectClass) throws IOException {
 		Set<IFolder<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<DLFolder>>() {
 		});
 		return myObjects;
 	}
 
 	@Override
-	public IFolder<Long> addFolder(long groupId, long repositoryId, boolean monuntPoint, long parentFolderId, String name, String description, IGroup<Long> site)
+	public IFolder<Long> addFolder(long groupId, long repositoryId, boolean mountPoint, long parentFolderId, String name, String description, IGroup<Long> site)
 			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
 		checkConnection();
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("groupId", Long.toString(groupId)));
 		params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryId)));
-		params.add(new BasicNameValuePair("mountPoint", Boolean.toString(monuntPoint)));
+		params.add(new BasicNameValuePair("mountPoint", Boolean.toString(mountPoint)));
 		params.add(new BasicNameValuePair("parentFolderId", Long.toString(parentFolderId)));
 		params.add(new BasicNameValuePair("name", name));
 		params.add(new BasicNameValuePair("description", description));
 		params.add(new BasicNameValuePair("serviceContext.scopeGroupId", Long.toString(site.getUniqueId())));
 
-		String result = getHttpResponse("dlfolder/add-folder", params);
+		String result = getHttpPostResponse("dlfolder/add-folder", params);
 
 		if (result != null) {
 			// A Simple JSON Response Read
@@ -60,7 +60,7 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 	}
 
 	@Override
-	public IFolder<Long> getFolder(long folderId) throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
+	public IFolder<Long> getFolder(long folderId) throws IOException, NotConnectedToWebServiceException,
 			WebServiceAccessError, AuthenticationRequired {
 		IFolder<Long> folder = FolderPool.getInstance().getElement(folderId);
 		if (folder != null) {
@@ -72,7 +72,7 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("folderId", Long.toString(folderId)));
 
-		String result = getHttpResponse("dlfolder/get-folder", params);
+		String result = getHttpPostResponse("dlfolder/get-folder", params);
 
 		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
 
@@ -94,7 +94,7 @@ public class FolderService extends ServiceAccess<IFolder<Long>, DLFolder> implem
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("folderId", folder.getUniqueId() + ""));
 
-			String result = getHttpResponse("dlfolder/delete-folder", params);
+			String result = getHttpPostResponse("dlfolder/delete-folder", params);
 
 			if (result == null || result.length() < 3) {
 				LiferayClientLogger.info(this.getClass().getName(), "Folder '" + folder.getUniqueName() + "' deleted.");

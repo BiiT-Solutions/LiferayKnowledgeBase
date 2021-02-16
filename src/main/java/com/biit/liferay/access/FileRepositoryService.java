@@ -31,193 +31,193 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Named
 public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repository>
-		implements IFileRepositoryService {
-	private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
-	private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
+        implements IFileRepositoryService {
+    private final static String RESPOSITORY_CLASSNAME = "com.liferay.portal.repository.liferayrepository.LiferayRepository";
+    private final static String DEFAULT_DLFOLDER_DESCRIPTION = "This is a repository folder";
 
-	private ClassNameService classNameService;
-	private FolderService folderService;
-	private UserService userService;
+    private ClassNameService classNameService;
+    private FolderService folderService;
+    private UserService userService;
 
-	@Override
-	public void disconnect() {
-		super.disconnect();
-		if (classNameService != null) {
-			classNameService.disconnect();
-		}
-		if (folderService != null) {
-			folderService.disconnect();
-		}
-		if (userService != null) {
-			userService.disconnect();
-		}
-	}
+    @Override
+    public void disconnect() {
+        super.disconnect();
+        if (classNameService != null) {
+            classNameService.disconnect();
+        }
+        if (folderService != null) {
+            folderService.disconnect();
+        }
+        if (userService != null) {
+            userService.disconnect();
+        }
+    }
 
-	@Override
-	public void authorizedServerConnection(String address, String protocol, int port, String webservicesPath,
-			String authenticationToken, String loginUser, String password) {
-		// Standard behavior.
-		super.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
-				password);
-		// Disconnect previous connections.
-		try {
-			classNameService.disconnect();
-		} catch (Exception e) {
+    @Override
+    public void authorizedServerConnection(String address, String protocol, int port, String proxyPrefix, String webservicesPath,
+                                           String authenticationToken, String loginUser, String password) {
+        // Standard behavior.
+        super.authorizedServerConnection(address, protocol, port, proxyPrefix, webservicesPath, authenticationToken, loginUser,
+                password);
+        // Disconnect previous connections.
+        try {
+            classNameService.disconnect();
+        } catch (Exception e) {
 
-		}
-		// classNames are needed to add an article.
-		classNameService = new ClassNameService();
-		classNameService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
-				loginUser, password);
+        }
+        // classNames are needed to add an article.
+        classNameService = new ClassNameService();
+        classNameService.authorizedServerConnection(address, protocol, port, proxyPrefix, webservicesPath, authenticationToken,
+                loginUser, password);
 
-		// Repository needs some basic folders.
-		try {
-			folderService.disconnect();
-		} catch (Exception e) {
+        // Repository needs some basic folders.
+        try {
+            folderService.disconnect();
+        } catch (Exception e) {
 
-		}
-		folderService = new FolderService();
-		folderService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken,
-				loginUser, password);
-		// Repository needs some basic folders.
-		try {
-			userService.disconnect();
-		} catch (Exception e) {
+        }
+        folderService = new FolderService();
+        folderService.authorizedServerConnection(address, protocol, port, proxyPrefix, webservicesPath, authenticationToken,
+                loginUser, password);
+        // Repository needs some basic folders.
+        try {
+            userService.disconnect();
+        } catch (Exception e) {
 
-		}
-		userService = new UserService();
-		userService.authorizedServerConnection(address, protocol, port, webservicesPath, authenticationToken, loginUser,
-				password);
-	}
+        }
+        userService = new UserService();
+        userService.authorizedServerConnection(address, protocol, port, proxyPrefix, webservicesPath, authenticationToken, loginUser,
+                password);
+    }
 
-	@Override
-	public Set<IRepository<Long>> decodeListFromJson(String json, Class<Repository> objectClass)
-			throws JsonParseException, JsonMappingException, IOException {
-		Set<IRepository<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<Repository>>() {
-		});
-		return myObjects;
-	}
+    @Override
+    public Set<IRepository<Long>> decodeListFromJson(String json, Class<Repository> objectClass)
+            throws JsonParseException, JsonMappingException, IOException {
+        Set<IRepository<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<Repository>>() {
+        });
+        return myObjects;
+    }
 
-	@Override
-	public IRepository<Long> addRespository(IGroup<Long> site, String name, String description)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
-			WebServiceAccessError {
-		checkConnection();
+    @Override
+    public IRepository<Long> addRespository(IGroup<Long> site, String name, String description)
+            throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired,
+            WebServiceAccessError {
+        checkConnection();
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
 
-		// get className id from another webservice.
-		IElement<Long> className = classNameService.getClassName(RESPOSITORY_CLASSNAME);
-		if (className == null) {
-			throw new WebServiceAccessError("Class name '" + RESPOSITORY_CLASSNAME + "' not found!");
-		}
-		params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
-		params.add(new BasicNameValuePair("classNameId", Long.toString(className.getUniqueId())));
-		params.add(new BasicNameValuePair("parentFolderId", "0"));
-		params.add(new BasicNameValuePair("name", name));
-		params.add(new BasicNameValuePair("description", description));
-		params.add(new BasicNameValuePair("portletId", PortletId.DOCUMENT_AND_MEDIA.getId()));
-		params.add(new BasicNameValuePair("typeSettingsProperties", "{}"));
+        // get className id from another webservice.
+        IElement<Long> className = classNameService.getClassName(RESPOSITORY_CLASSNAME);
+        if (className == null) {
+            throw new WebServiceAccessError("Class name '" + RESPOSITORY_CLASSNAME + "' not found!");
+        }
+        params.add(new BasicNameValuePair("groupId", Long.toString(site.getUniqueId())));
+        params.add(new BasicNameValuePair("classNameId", Long.toString(className.getUniqueId())));
+        params.add(new BasicNameValuePair("parentFolderId", "0"));
+        params.add(new BasicNameValuePair("name", name));
+        params.add(new BasicNameValuePair("description", description));
+        params.add(new BasicNameValuePair("portletId", PortletId.DOCUMENT_AND_MEDIA.getId()));
+        params.add(new BasicNameValuePair("typeSettingsProperties", "{}"));
 
-		String result = getHttpResponse("repository/add-repository", params);
+        String result = getHttpPostResponse("repository/add-repository", params);
 
-		if (result != null) {
-			// A Simple JSON Response Read
-			IRepository<Long> repository = decodeFromJson(result, Repository.class);
-			FileRepositoryPool.getInstance().addElement(repository);
-			return repository;
-		}
-		return null;
-	}
+        if (result != null) {
+            // A Simple JSON Response Read
+            IRepository<Long> repository = decodeFromJson(result, Repository.class);
+            FileRepositoryPool.getInstance().addElement(repository);
+            return repository;
+        }
+        return null;
+    }
 
-	@Override
-	@Deprecated
-	public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site)
-			throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
-			WebServiceAccessError, RepositoryNotCreatedException {
-		// Get user for folders
-		IUser<Long> user;
-		try {
-			user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
-			// Create basic site DLFolder.
-			IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
+    @Override
+    @Deprecated
+    public void createDLFoldersOfRepository(IRepository<Long> repository, IGroup<Long> company, IGroup<Long> site)
+            throws ClientProtocolException, NotConnectedToWebServiceException, IOException, AuthenticationRequired,
+            WebServiceAccessError, RepositoryNotCreatedException {
+        // Get user for folders
+        IUser<Long> user;
+        try {
+            user = userService.getUserByEmailAddress(company, userService.getConnectionUser());
+            // Create basic site DLFolder.
+            IFolder<Long> parentFolder = folderService.getFolder(((Repository) repository).getDlFolderId());
 
-			IFolder<Long> repositoryFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(),
-					false, parentFolder.getUniqueId(), Long.toString(user.getUniqueId()), DEFAULT_DLFOLDER_DESCRIPTION,
-					site);
-			if (repositoryFolder == null) {
-				throw new RepositoryNotCreatedException("Repository '" + repository.getUniqueName() + "' (id:"
-						+ repository.getUniqueId() + ") not created correctly. ");
-			}
+            IFolder<Long> repositoryFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(),
+                    false, parentFolder.getUniqueId(), Long.toString(user.getUniqueId()), DEFAULT_DLFOLDER_DESCRIPTION,
+                    site);
+            if (repositoryFolder == null) {
+                throw new RepositoryNotCreatedException("Repository '" + repository.getUniqueName() + "' (id:"
+                        + repository.getUniqueId() + ") not created correctly. ");
+            }
 
-			// Create adminPortlet Folder.
-			IFolder<Long> portletFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false,
-					repositoryFolder.getUniqueId(), PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION,
-					site);
-			if (portletFolder == null) {
-				throw new RepositoryNotCreatedException(
-						"Folder for site '" + site.getUniqueName() + "' and repository '" + repository.getUniqueName()
-								+ "' (id:" + repository.getUniqueId() + ") not created correctly. ");
-			}
-		} catch (UserDoesNotExistException e) {
-			LiferayClientLogger.debug(this.getClass().getName(),
-					"Cannot conect with user '" + userService.getConnectionUser() + "'.");
-		}
-	}
+            // Create adminPortlet Folder.
+            IFolder<Long> portletFolder = folderService.addFolder(site.getUniqueId(), repository.getUniqueId(), false,
+                    repositoryFolder.getUniqueId(), PortletId.ADMIN_PORTLET.getId(), DEFAULT_DLFOLDER_DESCRIPTION,
+                    site);
+            if (portletFolder == null) {
+                throw new RepositoryNotCreatedException(
+                        "Folder for site '" + site.getUniqueName() + "' and repository '" + repository.getUniqueName()
+                                + "' (id:" + repository.getUniqueId() + ") not created correctly. ");
+            }
+        } catch (UserDoesNotExistException e) {
+            LiferayClientLogger.debug(this.getClass().getName(),
+                    "Cannot conect with user '" + userService.getConnectionUser() + "'.");
+        }
+    }
 
-	@Override
-	public boolean deleteRepository(IRepository<Long> repository) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, RepositoryNotDeletedException {
-		if (repository != null) {
-			checkConnection();
+    @Override
+    public boolean deleteRepository(IRepository<Long> repository) throws NotConnectedToWebServiceException,
+            ClientProtocolException, IOException, AuthenticationRequired, RepositoryNotDeletedException {
+        if (repository != null) {
+            checkConnection();
 
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("repositoryId", repository.getUniqueId() + ""));
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("repositoryId", repository.getUniqueId() + ""));
 
-			String result = getHttpResponse("repository/delete-repository", params);
+            String result = getHttpPostResponse("repository/delete-repository", params);
 
-			if (result == null || result.length() < 3) {
-				FileRepositoryPool.getInstance().removeElement(repository.getUniqueId());
-				LiferayClientLogger.info(this.getClass().getName(),
-						"Repository '" + repository.getUniqueName() + "' deleted.");
-				return true;
-			} else {
-				throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:"
-						+ repository.getUniqueId() + ") not deleted correctly. ");
-			}
+            if (result == null || result.length() < 3) {
+                FileRepositoryPool.getInstance().removeElement(repository.getUniqueId());
+                LiferayClientLogger.info(this.getClass().getName(),
+                        "Repository '" + repository.getUniqueName() + "' deleted.");
+                return true;
+            } else {
+                throw new RepositoryNotDeletedException("Repository '" + repository.getUniqueName() + "' (id:"
+                        + repository.getUniqueId() + ") not deleted correctly. ");
+            }
 
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
-	@Override
-	public IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException,
-			IOException, NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired {
-		IRepository<Long> repository = FileRepositoryPool.getInstance().getElement(repositoryId);
-		if (repository != null) {
-			return repository;
-		}
-		checkConnection();
+    @Override
+    public IRepository<Long> getRespository(long repositoryId) throws JsonParseException, JsonMappingException,
+            IOException, NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired {
+        IRepository<Long> repository = FileRepositoryPool.getInstance().getElement(repositoryId);
+        if (repository != null) {
+            return repository;
+        }
+        checkConnection();
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryId)));
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("repositoryId", Long.toString(repositoryId)));
 
-		String result = getHttpResponse("repository/get-repository", params);
+        String result = getHttpPostResponse("repository/get-repository", params);
 
-		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
+        LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
 
-		if (result != null) {
-			// A Simple JSON Response Read
-			repository = decodeFromJson(result, Repository.class);
-			FileRepositoryPool.getInstance().addElement(repository);
-			return repository;
-		}
-		return null;
-	}
+        if (result != null) {
+            // A Simple JSON Response Read
+            repository = decodeFromJson(result, Repository.class);
+            FileRepositoryPool.getInstance().addElement(repository);
+            return repository;
+        }
+        return null;
+    }
 
-	@Override
-	public void reset() {
-		FileRepositoryPool.getInstance().reset();
-	}
+    @Override
+    public void reset() {
+        FileRepositoryPool.getInstance().reset();
+    }
 
 }

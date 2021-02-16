@@ -33,157 +33,157 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Named
 public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry> implements IFileEntryService {
-	private final static String DUPLICATED_FILE = "DuplicateFileException";
-	private final static String NOT_FOUND = "404 Not Found";
+    private final static String DUPLICATED_FILE = "DuplicateFileException";
+    private final static String NOT_FOUND = "404 Not Found";
 
-	@Override
-	public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1)
-			throws JsonParseException, JsonMappingException, IOException {
-		Set<IFileEntry<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<FileEntry>>() {
-		});
-		return myObjects;
-	}
+    @Override
+    public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1)
+            throws IOException {
+        Set<IFileEntry<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<FileEntry>>() {
+        });
+        return myObjects;
+    }
 
-	@Override
-	public IFileEntry<Long> addFile(long siteGroupId, long folderId, String sourceFileName, String mimeType,
-			String title, String description, String changeLog, File file)
-			throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired,
-			WebServiceAccessError, DuplicatedFileException, FileNotFoundException {
-		checkConnection();
+    @Override
+    public IFileEntry<Long> addFile(long siteGroupId, long folderId, String sourceFileName, String mimeType,
+                                    String title, String description, String changeLog, File file)
+            throws IOException, NotConnectedToWebServiceException, AuthenticationRequired,
+            WebServiceAccessError, DuplicatedFileException {
+        checkConnection();
 
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-		builder.addPart("repositoryId", new StringBody(Long.toString(siteGroupId), ContentType.TEXT_PLAIN));
-		builder.addPart("folderId", new StringBody(Long.toString(folderId), ContentType.TEXT_PLAIN));
-		builder.addPart("sourceFileName", new StringBody(sourceFileName, ContentType.TEXT_PLAIN));
-		builder.addPart("mimeType", new StringBody(mimeType, ContentType.TEXT_PLAIN));
-		builder.addPart("title", new StringBody(title, ContentType.TEXT_PLAIN));
-		builder.addPart("description", new StringBody(description, ContentType.TEXT_PLAIN));
-		builder.addPart("changeLog", new StringBody(changeLog, ContentType.TEXT_PLAIN));
-		builder.addBinaryBody("file", file);
+        builder.addPart("repositoryId", new StringBody(Long.toString(siteGroupId), ContentType.TEXT_PLAIN));
+        builder.addPart("folderId", new StringBody(Long.toString(folderId), ContentType.TEXT_PLAIN));
+        builder.addPart("sourceFileName", new StringBody(sourceFileName, ContentType.TEXT_PLAIN));
+        builder.addPart("mimeType", new StringBody(mimeType, ContentType.TEXT_PLAIN));
+        builder.addPart("title", new StringBody(title, ContentType.TEXT_PLAIN));
+        builder.addPart("description", new StringBody(description, ContentType.TEXT_PLAIN));
+        builder.addPart("changeLog", new StringBody(changeLog, ContentType.TEXT_PLAIN));
+        builder.addBinaryBody("file", file);
 
-		String result = getHttpResponse("dlapp/add-file-entry", builder);
+        String result = getHttpPostResponse("dlapp/add-file-entry", builder);
 
-		if (result != null) {
-			// A Simple JSON Response Read
-			try {
-				IFileEntry<Long> fileEntry = decodeFromJson(result, FileEntry.class);
-				FileEntryPool.getInstance().addElement(fileEntry);
-				return fileEntry;
-			} catch (WebServiceAccessError wsae) {
-				if (wsae.getMessage().contains(DUPLICATED_FILE)) {
-					throw new DuplicatedFileException("File '" + sourceFileName + "' already exists on this folder.");
-				}
-				throw wsae;
-			} catch (JsonParseException e) {
-				if (e.getMessage().contains(NOT_FOUND)) {
-					throw new FileNotFoundException("File '" + sourceFileName + "' not found.");
-				}
-				throw e;
-			}
-		}
-		return null;
-	}
+        if (result != null) {
+            // A Simple JSON Response Read
+            try {
+                IFileEntry<Long> fileEntry = decodeFromJson(result, FileEntry.class);
+                FileEntryPool.getInstance().addElement(fileEntry);
+                return fileEntry;
+            } catch (WebServiceAccessError wsae) {
+                if (wsae.getMessage().contains(DUPLICATED_FILE)) {
+                    throw new DuplicatedFileException("File '" + sourceFileName + "' already exists on this folder.");
+                }
+                throw wsae;
+            } catch (JsonParseException e) {
+                if (e.getMessage().contains(NOT_FOUND)) {
+                    throw new FileNotFoundException("File '" + sourceFileName + "' not found.");
+                }
+                throw e;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public Set<IFileEntry<Long>> getFileEntries(long siteGroupId, long folderId)
-			throws NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
-		Set<IFileEntry<Long>> files = new HashSet<IFileEntry<Long>>();
+    @Override
+    public Set<IFileEntry<Long>> getFileEntries(long siteGroupId, long folderId)
+            throws NotConnectedToWebServiceException, IOException, AuthenticationRequired {
+        Set<IFileEntry<Long>> files = new HashSet<>();
 
-		// Look up files in the liferay.
-		checkConnection();
+        // Look up files in the liferay.
+        checkConnection();
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("repositoryId", Long.toString(siteGroupId)));
-		params.add(new BasicNameValuePair("folderId", Long.toString(folderId)));
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("repositoryId", Long.toString(siteGroupId)));
+        params.add(new BasicNameValuePair("folderId", Long.toString(folderId)));
 
-		String result = getHttpResponse("dlapp/get-file-entries", params);
-		if (result != null) {
-			// A Simple JSON Response Read
-			files = decodeListFromJson(result, FileEntry.class);
-			LiferayClientLogger.debug(this.getClass().getName(), "Obtained '" + files + "'.");
-		}
+        String result = getHttpPostResponse("dlapp/get-file-entries", params);
+        if (result != null) {
+            // A Simple JSON Response Read
+            files = decodeListFromJson(result, FileEntry.class);
+            LiferayClientLogger.debug(this.getClass().getName(), "Obtained '" + files + "'.");
+        }
 
-		return files;
-	}
+        return files;
+    }
 
-	@Override
-	public void deleteFile(IFileEntry<Long> fileEntry) throws DocumentNotDeletedException,
-			NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
-		if (fileEntry != null) {
-			checkConnection();
+    @Override
+    public void deleteFile(IFileEntry<Long> fileEntry) throws DocumentNotDeletedException,
+            NotConnectedToWebServiceException, ClientProtocolException, IOException, AuthenticationRequired {
+        if (fileEntry != null) {
+            checkConnection();
 
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("fileEntryId", fileEntry.getUniqueId() + ""));
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("fileEntryId", fileEntry.getUniqueId() + ""));
 
-			String result = getHttpResponse("dlapp/delete-file-entry", params);
+            String result = getHttpPostResponse("dlapp/delete-file-entry", params);
 
-			if (result == null || result.length() < 3) {
-				FileEntryPool.getInstance().removeElement(fileEntry.getUniqueId());
-				LiferayClientLogger.info(this.getClass().getName(),
-						"Document '" + fileEntry.getUniqueName() + "' deleted.");
-			} else {
-				throw new DocumentNotDeletedException("Document '" + fileEntry.getUniqueName() + "' (id:"
-						+ fileEntry.getUniqueId() + ") not deleted correctly. ");
-			}
-		}
-	}
+            if (result == null || result.length() < 3) {
+                FileEntryPool.getInstance().removeElement(fileEntry.getUniqueId());
+                LiferayClientLogger.info(this.getClass().getName(),
+                        "Document '" + fileEntry.getUniqueName() + "' deleted.");
+            } else {
+                throw new DocumentNotDeletedException("Document '" + fileEntry.getUniqueName() + "' (id:"
+                        + fileEntry.getUniqueId() + ") not deleted correctly. ");
+            }
+        }
+    }
 
-	@Override
-	public IFileEntry<Long> geFileEntry(long fileEntryId) throws NotConnectedToWebServiceException,
-			ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
+    @Override
+    public IFileEntry<Long> geFileEntry(long fileEntryId) throws NotConnectedToWebServiceException,
+            ClientProtocolException, IOException, AuthenticationRequired, WebServiceAccessError {
 
-		IFileEntry<Long> fileEntry = FileEntryPool.getInstance().getElement(fileEntryId);
-		if (fileEntry != null) {
-			return fileEntry;
-		}
-		checkConnection();
+        IFileEntry<Long> fileEntry = FileEntryPool.getInstance().getElement(fileEntryId);
+        if (fileEntry != null) {
+            return fileEntry;
+        }
+        checkConnection();
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("fileEntryId", Long.toString(fileEntryId)));
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("fileEntryId", Long.toString(fileEntryId)));
 
-		String result = getHttpResponse("dlapp/get-file-entry", params);
+        String result = getHttpPostResponse("dlapp/get-file-entry", params);
 
-		LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
+        LiferayClientLogger.debug(this.getClass().getName(), "Data retrieved: '" + result + "'.");
 
-		if (result != null) {
-			// A Simple JSON Response Read
-			fileEntry = decodeFromJson(result, FileEntry.class);
-			FileEntryPool.getInstance().addElement(fileEntry);
-			return fileEntry;
-		}
-		return null;
-	}
+        if (result != null) {
+            // A Simple JSON Response Read
+            fileEntry = decodeFromJson(result, FileEntry.class);
+            FileEntryPool.getInstance().addElement(fileEntry);
+            return fileEntry;
+        }
+        return null;
+    }
 
-	@Override
-	public String getFileRelativeUrl(long fileEntryId) throws ClientProtocolException,
-			NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
-		IFileEntry<Long> fileEntry = geFileEntry(fileEntryId);
-		return getFileRelativeUrl(fileEntry);
-	}
+    @Override
+    public String getFileRelativeUrl(long fileEntryId) throws ClientProtocolException,
+            NotConnectedToWebServiceException, IOException, AuthenticationRequired, WebServiceAccessError {
+        IFileEntry<Long> fileEntry = geFileEntry(fileEntryId);
+        return getFileRelativeUrl(fileEntry);
+    }
 
-	public static String getFileRelativeUrl(IFileEntry<Long> fileEntry) {
-		if (fileEntry == null) {
-			return "";
-		}
-		return "/documents/" + fileEntry.getGroupId() + File.separator + fileEntry.getFolderId() + File.separator
-				+ fileEntry.getTitle() + File.separator + fileEntry.getUuid();
-	}
+    public static String getFileRelativeUrl(IFileEntry<Long> fileEntry) {
+        if (fileEntry == null) {
+            return "";
+        }
+        return "/documents/" + fileEntry.getGroupId() + File.separator + fileEntry.getFolderId() + File.separator
+                + fileEntry.getTitle() + File.separator + fileEntry.getUuid();
+    }
 
-	public static String getFileAbsoluteUrl(IFileEntry<Long> fileEntry) {
-		return LiferayConfigurationReader.getInstance().getLiferayProtocol() + "://"
-				+ LiferayConfigurationReader.getInstance().getHost() + ":"
-				+ LiferayConfigurationReader.getInstance().getConnectionPort() + "/"
-				+ LiferayConfigurationReader.getInstance().getVirtualHost() + getFileRelativeUrl(fileEntry);
-	}
+    public static String getFileAbsoluteUrl(IFileEntry<Long> fileEntry) {
+        return LiferayConfigurationReader.getInstance().getLiferayProtocol() + "://"
+                + LiferayConfigurationReader.getInstance().getHost() + ":"
+                + LiferayConfigurationReader.getInstance().getConnectionPort() + "/"
+                + LiferayConfigurationReader.getInstance().getVirtualHost() + getFileRelativeUrl(fileEntry);
+    }
 
-	public class Message {
-		public byte[] value;
-	}
+    public class Message {
+        public byte[] value;
+    }
 
-	@Override
-	public void reset() {
-		FileEntryPool.getInstance().reset();
-	}
+    @Override
+    public void reset() {
+        FileEntryPool.getInstance().reset();
+    }
 
 }

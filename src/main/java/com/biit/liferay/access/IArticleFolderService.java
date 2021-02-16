@@ -1,6 +1,7 @@
 package com.biit.liferay.access;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -16,23 +17,26 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface IArticleFolderService {
 
-	boolean deleteFolder(IFolder<Long> folder) throws ClientProtocolException, IOException,
-			NotConnectedToWebServiceException, AuthenticationRequired, FolderNotDeletedException, WebServiceAccessError;
+    boolean deleteFolder(IFolder<Long> folder) throws IOException,
+            NotConnectedToWebServiceException, AuthenticationRequired, FolderNotDeletedException, WebServiceAccessError;
 
-	IFolder<Long> getFolder(long folderId) throws JsonParseException, JsonMappingException, IOException,
-			NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired;
+    IFolder<Long> getFolder(long folderId) throws IOException,
+            NotConnectedToWebServiceException, WebServiceAccessError, AuthenticationRequired;
 
-	IFolder<Long> addFolder(Long groupId, Long parentResourcePrimKey, Long parentResourceClassNameId, String name,
-			String description, IGroup<Long> site) throws ClientProtocolException, NotConnectedToWebServiceException,
-			IOException, AuthenticationRequired, WebServiceAccessError;
+    IFolder<Long> addFolder(Long groupId, Long parentResourcePrimKey, Long parentResourceClassNameId, String name,
+                            String description, IGroup<Long> site) throws NotConnectedToWebServiceException,
+            IOException, AuthenticationRequired, WebServiceAccessError;
 
-	Integer getFoldersCount(Long groupId, Long parentKBFolderId, IGroup<Long> site)
-			throws ClientProtocolException, IOException, NotConnectedToWebServiceException, AuthenticationRequired;
+    Integer getFoldersCount(Long groupId, Long parentKBFolderId, IGroup<Long> site)
+            throws IOException, NotConnectedToWebServiceException, AuthenticationRequired;
 
-	IFolder<Long> getFolder(String urlFolder, Long groupId, Long parentKBFolderId)
-			throws JsonParseException, JsonMappingException, IOException, NotConnectedToWebServiceException,
-			WebServiceAccessError, AuthenticationRequired;
+    Set<IFolder<Long>> getFolders(Long groupId, Long parentKBFolderId, int start, int end, IGroup<Long> site) throws IOException,
+            NotConnectedToWebServiceException, AuthenticationRequired;
 
-	IElement<Long> getFolderClassName() throws ClientProtocolException, NotConnectedToWebServiceException, IOException,
-			AuthenticationRequired, WebServiceAccessError;
+    IFolder<Long> getFolder(String urlFolder, Long groupId, Long parentKBFolderId)
+            throws IOException, NotConnectedToWebServiceException,
+            WebServiceAccessError, AuthenticationRequired;
+
+    IElement<Long> getFolderClassName() throws NotConnectedToWebServiceException, IOException,
+            AuthenticationRequired, WebServiceAccessError;
 }
