@@ -23,7 +23,7 @@
 
 	<scm>
 		<connection>scm:git:git.biit-solutions.com:BiiT/LiferayKnowledgeBase.git</connection>
-		<connection>scm:git:git.biit-solutions.com:BiiT/LiferayKnowledgeBase.git</developerConnection>
+		<developerConnection>scm:git:git.biit-solutions.com:BiiT/LiferayKnowledgeBase.git</developerConnection>
 		<tag>liferay-knowledge-base</tag>
 	</scm>
 
