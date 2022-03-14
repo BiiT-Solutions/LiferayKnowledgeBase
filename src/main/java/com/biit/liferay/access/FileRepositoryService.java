@@ -2,6 +2,7 @@ package com.biit.liferay.access;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -93,9 +94,9 @@ public class FileRepositoryService extends ServiceAccess<IRepository<Long>, Repo
     @Override
     public Set<IRepository<Long>> decodeListFromJson(String json, Class<Repository> objectClass)
             throws JsonParseException, JsonMappingException, IOException {
-        Set<IRepository<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<Repository>>() {
+        Set<Repository> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<Repository>>() {
         });
-        return myObjects;
+        return new HashSet<>(myObjects);
     }
 
     @Override

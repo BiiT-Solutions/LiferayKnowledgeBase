@@ -39,9 +39,9 @@ public class FileEntryService extends ServiceAccess<IFileEntry<Long>, FileEntry>
     @Override
     public Set<IFileEntry<Long>> decodeListFromJson(String json, Class<FileEntry> arg1)
             throws IOException {
-        Set<IFileEntry<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<FileEntry>>() {
+        Set<FileEntry> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<FileEntry>>() {
         });
-        return myObjects;
+        return new HashSet<>(myObjects);
     }
 
     @Override

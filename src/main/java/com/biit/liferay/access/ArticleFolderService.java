@@ -20,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,9 +40,9 @@ public class ArticleFolderService extends ServiceAccess<IFolder<Long>, KbFolder>
     @Override
     public Set<IFolder<Long>> decodeListFromJson(String json, Class<KbFolder> objectClass)
             throws IOException {
-        Set<IFolder<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbFolder>>() {
+        Set<KbFolder> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbFolder>>() {
         });
-        return myObjects;
+        return new HashSet<>(myObjects);
     }
 
     @Override

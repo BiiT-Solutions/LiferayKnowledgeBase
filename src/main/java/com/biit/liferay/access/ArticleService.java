@@ -96,9 +96,9 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
     @Override
     public Set<IArticle<Long>> decodeListFromJson(String json, Class<KbArticle> objectClass)
             throws IOException {
-        Set<IArticle<Long>> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbArticle>>() {
+        Set<KbArticle> myObjects = new ObjectMapper().readValue(json, new TypeReference<Set<KbArticle>>() {
         });
-        return myObjects;
+        return new HashSet<>(myObjects);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ArticleService extends ServiceAccess<IArticle<Long>, KbArticle> imp
      * Gets an article by its resource key and the status.
      *
      * @param resourcePrimKey
-     * @param status      0 if published.
+     * @param status          0 if published.
      * @return
      * @throws NotConnectedToWebServiceException
      * @throws ClientProtocolException
