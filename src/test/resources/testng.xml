@@ -4,14 +4,15 @@
 		preserve-order="true">
 		<groups>
 			<run>
-				<include name="connection" />
-				<include name="siteAccess" />
-				<include name="companyAccess" />
-				<include name="articleAccess" />
-				<include name="articleFolderAccess" />
-				<include name="repository" />
-				<include name="fileEntry" />
-				<include name="deleteData" />
+				<!-- Disabled as they need a Liferay instance running -->
+				<exclude name="connection" />
+				<exclude name="siteAccess" />
+				<exclude name="companyAccess" />
+				<exclude name="articleAccess" />
+				<exclude name="articleFolderAccess" />
+				<exclude name="repository" />
+				<exclude name="fileEntry" />
+				<exclude name="deleteData" />
 			</run>
 		</groups>
 		<classes>
