@@ -122,7 +122,7 @@
 	<dependencies>
 		<!-- Basic Liferay Access -->
 		<dependency>
-			<groupId>com.biit.liferay</groupId>
+			<groupId>com.biit-sourcing.liferay</groupId>
 			<artifactId>liferay-service-common</artifactId>
 		</dependency>
 		<!-- Testing -->
